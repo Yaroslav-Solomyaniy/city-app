@@ -1,0 +1,63 @@
+import { getAdministrators } from "@/actions/administrators/get-administators"
+import { getCategories } from "@/actions/category/get-categories"
+import { getCategoryById } from "@/actions/category/get-category-by-id"
+import { getCategoryBySlug } from "@/actions/category/get-category-by-slug"
+import { getResources } from "@/actions/resource/get-resources"
+
+export type Action<T = undefined> = { ok: true; data?: T } | { ok: false; error: string }
+export type TokenStatus = "valid" | "invalid" | "used" | "expired"
+
+export type InvitePayload = {
+  id: string
+  email: string
+  used: boolean
+  expires: string
+  createdAt: string
+  link: string
+}
+
+export type LogEntry = {
+  id: string
+  action: string
+  entity: string
+  entityName: string
+  userName: string
+  userId: string | null
+  details: string | null
+  createdAt: string
+}
+
+
+export type SubcategoryFormData = {
+  title: string
+  titleEn: string
+  description?: string
+}
+
+export type ResourceFormData = {
+  title: string
+  description: string
+  url: string
+  icon: string
+  tags: string[]
+  subcategoryId: string | null
+}
+
+export type Admin = Awaited<ReturnType<typeof getAdministrators>>["admins"][number]
+export type CategoryWithCount = Awaited<ReturnType<typeof getCategories>>[number]
+
+////============  CATEGORY =============== //////
+export type CategoryDetail = NonNullable<Awaited<ReturnType<typeof getCategoryById>>>
+export type SubcategoryItem = CategoryDetail["subcategories"][number]
+export type ResourceItem = CategoryDetail["resources"][number]
+
+
+//============== PUBLIC CATEGORY =======================/////////
+export type PublicCategory = NonNullable<Awaited<ReturnType<typeof getCategoryBySlug>>>
+export type PublicSubcategory = PublicCategory["subcategories"][number]
+export type PublicResource = PublicCategory["resources"][number]
+
+
+////// ================ RESOURCES ======================= //////
+export type ResourceWithCategory = Awaited<ReturnType<typeof getResources>>[number]
+
