@@ -13,6 +13,13 @@ export async function getResources() {
           slug: true,
           accent: true,
           bg: true,
+          iconName: true,
+        },
+      },
+      subcategory: {
+        select: {
+          id: true,
+          title: true,
         },
       },
     },

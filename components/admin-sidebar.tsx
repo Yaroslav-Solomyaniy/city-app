@@ -60,7 +60,7 @@ export function AdminSidebar() {
         </Link>
       </SidebarHeader>
 
-      <SidebarSeparator />
+      <SidebarSeparator className={"mx-0"} />
 
       {/* ── Nav ── */}
       <SidebarContent>
@@ -93,7 +93,7 @@ export function AdminSidebar() {
         ))}
       </SidebarContent>
 
-      <SidebarSeparator />
+      <SidebarSeparator className={"mx-0"} />
 
       {/* ── Footer ── */}
       <SidebarFooter>

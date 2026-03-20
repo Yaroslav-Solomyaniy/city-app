@@ -1,4 +1,4 @@
-'use server'
+"use server"
 
 import prisma from "@/lib/prisma"
 
@@ -14,9 +14,13 @@ export async function getCategoryBySlug(slug: string) {
       },
       resources: {
         orderBy: { order: "asc" },
+        include: {
+          subcategory: {
+            select: { id: true, slug: true },
+          },
+        },
       },
       _count: { select: { resources: true } },
     },
   })
 }
-

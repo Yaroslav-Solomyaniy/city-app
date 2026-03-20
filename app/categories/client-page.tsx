@@ -29,6 +29,7 @@ import CategoriesGrid from "./_components/categories-grid"
 import CategoriesList from "./_components/categories-list"
 import CategoriesTable from "./_components/categories-table"
 import { plural, wordForm } from "@/lib/plural"
+import EmptyState from "@/components/empty-state"
 
 const ICON_MAP: Record<string, React.ElementType> = {
   Heart,
@@ -58,6 +59,19 @@ export default function CategoriesClient({ categories }: { categories: CategoryW
   const [topOpen, setTopOpen] = useState(false)
   const [statsOpen, setStatsOpen] = useState(false)
 
+  const filtered = useMemo(
+    () =>
+      categories.filter(
+        (c) =>
+          !search ||
+          c.title.toLowerCase().includes(search.toLowerCase()) ||
+          c.titleEn.toLowerCase().includes(search.toLowerCase()) ||
+          c.services.some((s) => s.toLowerCase().includes(search.toLowerCase()))
+      ),
+    [search, categories]
+  )
+
+
   useEffect(() => {
     const timer = setTimeout(() => {
       const params = new URLSearchParams(searchParamsRef.current.toString())
@@ -77,17 +91,6 @@ export default function CategoriesClient({ categories }: { categories: CategoryW
 
   const totalResources = categories.reduce((s, c) => s + c._count.resources, 0)
 
-  const filtered = useMemo(
-    () =>
-      categories.filter(
-        (c) =>
-          !search ||
-          c.title.toLowerCase().includes(search.toLowerCase()) ||
-          c.titleEn.toLowerCase().includes(search.toLowerCase()) ||
-          c.services.some((s) => s.toLowerCase().includes(search.toLowerCase()))
-      ),
-    [search, categories]
-  )
 
   const stats = [
     { value: categories.length, word: "категорія" },
@@ -201,16 +204,7 @@ export default function CategoriesClient({ categories }: { categories: CategoryW
           </p>
 
           {filtered.length === 0 ? (
-            <Card>
-              <CardContent className="flex flex-col items-center justify-center py-20 text-center">
-                <p className="mb-3 text-4xl">🔍</p>
-                <p className="mb-1 text-[15px] font-semibold text-foreground">Нічого не знайдено</p>
-                <p className="mb-4 text-[13px] text-muted-foreground">Спробуйте змінити запит</p>
-                <Button variant="ghost" size="sm" onClick={() => setSearch("")}>
-                  Скинути пошук
-                </Button>
-              </CardContent>
-            </Card>
+            <EmptyState variant="search" query={search} onResetSearch={() => setSearch("")} />
           ) : (
             <>
               {view === "grid" && <CategoriesGrid categories={filtered} />}
@@ -230,7 +224,6 @@ export default function CategoriesClient({ categories }: { categories: CategoryW
           <div className="max-h-[70vh] overflow-y-auto">{sidebarBlock}</div>
         </DialogContent>
       </Dialog>
-
     </>
   )
 }

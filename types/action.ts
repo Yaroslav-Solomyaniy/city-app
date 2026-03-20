@@ -3,6 +3,7 @@ import { getCategories } from "@/actions/category/get-categories"
 import { getCategoryById } from "@/actions/category/get-category-by-id"
 import { getCategoryBySlug } from "@/actions/category/get-category-by-slug"
 import { getResources } from "@/actions/resource/get-resources"
+import { getCategoriesWithSubs } from "@/actions/category/get-category-with-subs"
 
 export type Action<T = undefined> = { ok: true; data?: T } | { ok: false; error: string }
 export type TokenStatus = "valid" | "invalid" | "used" | "expired"
@@ -50,7 +51,7 @@ export type CategoryWithCount = Awaited<ReturnType<typeof getCategories>>[number
 export type CategoryDetail = NonNullable<Awaited<ReturnType<typeof getCategoryById>>>
 export type SubcategoryItem = CategoryDetail["subcategories"][number]
 export type ResourceItem = CategoryDetail["resources"][number]
-
+export type CategoryWithSubs = Awaited<ReturnType<typeof getCategoriesWithSubs>>[number]
 
 //============== PUBLIC CATEGORY =======================/////////
 export type PublicCategory = NonNullable<Awaited<ReturnType<typeof getCategoryBySlug>>>
@@ -60,4 +61,6 @@ export type PublicResource = PublicCategory["resources"][number]
 
 ////// ================ RESOURCES ======================= //////
 export type ResourceWithCategory = Awaited<ReturnType<typeof getResources>>[number]
+export type ResourceWithRelations = Awaited<ReturnType<typeof getResources>>[number]
+
 

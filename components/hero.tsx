@@ -1,197 +1,130 @@
-// components/hero.tsx
 "use client"
 
 import Image from "next/image"
 import Link from "next/link"
 import panorama from "@/public/new_pano.jpeg"
-import { ArrowRight, Menu, Search, X } from "lucide-react"
-import { useEffect, useState } from "react"
-import { usePathname } from "next/navigation"
-import { NAV_LINKS } from "@/constants/nav"
-import { cn } from "@/lib/utils"
-import { Input } from "@/components/ui/input"
+import iphone from "@/public/iphone.png"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { ArrowRight, Clock, Database, LayoutGrid } from "lucide-react"
+import { TypingAnimation } from "@/components/ui/typing-animation"
+
+const STATS = [
+  { icon: LayoutGrid, value: "Усі послуги", label: "Адміністративні, соціальні та довідкові сервіси" },
+  { icon: Clock, value: "24 / 7", label: "Доступно у будь-який час" },
+  { icon: Database, value: "Актуально", label: "Оновлені ресурси та перевірені дані" },
+]
 
 export default function Hero() {
-  const pathname = usePathname()
-  const [loaded, setLoaded] = useState(false)
-  const [scrollY, setScrollY] = useState(0)
-  const [searchOpen, setSearchOpen] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-
-  const isActive = (href: string) => pathname === href || (href !== "/" && pathname.startsWith(href))
-
-  useEffect(() => {
-    const t = setTimeout(() => setLoaded(true), 80)
-    return () => clearTimeout(t)
-  }, [])
-
-  useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY)
-    window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [])
-
   return (
-    <header className="relative overflow-hidden bg-black" style={{ height: "100dvh", minHeight: 580 }}>
-      {/* ── Фото з parallax ── */}
-      <div
-        className="absolute inset-0 will-change-transform"
-        style={{
-          transform: `translateY(${scrollY * 0.28}px) scale(1.08)`,
-          transformOrigin: "center top",
-        }}
-      >
-        <Image src={panorama} alt="Панорама Черкас" fill priority quality={95} sizes="100vw" className="object-cover object-center" />
+    <header className="relative flex min-h-screen flex-col overflow-hidden">
+      {/* ── Full-bleed panorama background ── */}
+      <div className="absolute inset-0 z-0">
+        <Image src={panorama} alt="Панорама Черкас" fill priority quality={90} sizes="100vw" className="object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20" />
       </div>
 
-      {/* ── Градієнти ── */}
-      {/* Верх — дуже легкий, щоб небо дихало */}
-      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/30 to-transparent" />
-      {/* Низ — основний, під контент */}
-      <div className="absolute inset-x-0 bottom-0 h-[65%] bg-gradient-to-t from-black via-black/75 to-transparent" />
-      {/* Grain */}
+      {/* ── Main content grid ── */}
+      {/*
+        mobile:  single column, card full width, no iPhone
+        tablet:  two columns [3fr 2fr], card + smaller iPhone
+        desktop: two columns [5fr 4fr], card + full iPhone
+      */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.025]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundSize: "128px",
-        }}
-      />
-
-      {/* ── Burger — верхній правий (мобайл) ── */}
-      <div
-        className="absolute top-4 right-4 z-20 md:hidden"
-        style={{
-          opacity: loaded ? 1 : 0,
-          transition: "opacity 0.8s ease 0.4s",
-        }}
+        className="relative z-10 mx-auto grid w-full max-w-[1400px] flex-1 grid-cols-1 items-center gap-6 px-4 py-10 sm:px-6 sm:py-12 md:grid-cols-[3fr_2fr] md:gap-8 md:px-10 md:py-14 lg:grid-cols-[5fr_4fr] lg:gap-12 lg:px-16 lg:py-16 xl:gap-16 xl:px-24"
+        style={{ minHeight: "100vh" }}
       >
-        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon-sm" className="rounded-xl text-white/70 hover:bg-white/15 hover:text-white">
-              <Menu className="size-4" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-72" onOpenAutoFocus={(e) => e.preventDefault()}>
-            <SheetHeader>
-              <SheetTitle className="text-left text-sm">СітіЧЕ — Громадський портал Черкас</SheetTitle>
-            </SheetHeader>
-            <div className="px-4 pb-2">
-              <Input placeholder="Пошук по порталу..." className="h-9" />
-            </div>
-            <nav className="flex flex-col gap-1 px-4">
-              {NAV_LINKS.map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  onClick={() => setMobileOpen(false)}
-                  className={cn(
-                    "rounded-xl px-3.5 py-2.5 text-[13.5px] font-semibold transition-all",
-                    isActive(href) ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-primary/5 hover:text-foreground"
-                  )}
-                >
-                  {label}
-                </Link>
-              ))}
-            </nav>
-            <p className="mt-auto border-t px-4 pt-3 text-[10.5px] leading-relaxed text-muted-foreground">
-              КП «Інститут розвитку міста» Черкаської міської ради
-            </p>
-          </SheetContent>
-        </Sheet>
-      </div>
-
-      {/* ── Весь контент — прилипає до низу ── */}
-      <div className="absolute inset-x-0 bottom-0 z-10 px-5 pb-7 sm:px-10 sm:pb-10">
-        <div className="mx-auto max-w-6xl">
-          {/* Надзаголовок */}
-          <div
-            style={{
-              opacity: loaded ? 1 : 0,
-              transform: loaded ? "translateY(0)" : "translateY(10px)",
-              transition: "opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s",
-            }}
-          >
-            <span className="mb-2 inline-block text-[10px] font-semibold tracking-[0.32em] text-white/40 uppercase sm:text-[11px]">
-              Офіційний портал громади · Черкаси
-            </span>
+        {/* ── LEFT: frosted content card ── */}
+        <div
+          className="flex flex-col gap-5 rounded-3xl p-6 sm:gap-6 sm:p-8 md:gap-6 md:p-8 lg:gap-8 lg:p-12"
+          style={{
+            background: "rgba(255, 255, 255, 0.82)",
+            backdropFilter: "blur(24px) saturate(1.6)",
+            WebkitBackdropFilter: "blur(24px) saturate(1.6)",
+            boxShadow: "0 8px 48px rgba(0,0,0,0.12), 0 1px 0 rgba(255,255,255,0.6) inset",
+            border: "1px solid rgba(255,255,255,0.55)",
+          }}
+        >
+          {/* badge */}
+          <div className="flex items-center gap-2 self-start rounded-full border border-slate-200/80 bg-white/70 px-3 py-1 shadow-sm sm:px-4 sm:py-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span className="text-[10px] font-semibold tracking-[0.16em] text-slate-500 uppercase sm:text-[11px]">Офіційний портал Черкас</span>
           </div>
 
-          {/* Заголовок */}
-          <div
-            style={{
-              opacity: loaded ? 1 : 0,
-              transform: loaded ? "translateY(0)" : "translateY(20px)",
-              transition: "opacity 1s ease 0.2s, transform 1s ease 0.2s",
-            }}
-          >
-            <h1
-              className="mb-1 leading-[0.88] font-black text-white"
-              style={{
-                fontSize: "clamp(52px, 9.5vw, 124px)",
-                letterSpacing: "-0.035em",
-                textShadow: "0 2px 32px rgba(0,0,0,0.35)",
-              }}
-            >
-              Сіті
+          {/* logo */}
+          <Image src="/1.png" alt="Черкаси" width={200} height={62} className="block w-[160px] sm:w-[190px] lg:w-[210px]" />
+
+          {/* headline */}
+          <div className="space-y-2 sm:space-y-3">
+            <h1 className="text-[2.6rem] leading-[1.03] font-black tracking-tight text-slate-900 sm:text-[3rem] md:text-[2.8rem] lg:text-[clamp(3rem,4vw,4.8rem)]">
               <span
                 style={{
-                  background: "linear-gradient(135deg, #fbbf24 0%, #f97316 40%, #ef4444 100%)",
+                  background: "linear-gradient(100deg, #0369a1 0%, #0ea5e9 60%, #38bdf8 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
                 }}
               >
-                ЧЕ
+                СітіЧЕ
               </span>
             </h1>
+            <h2 className="text-[1.6rem] leading-[1.08] font-black tracking-tight text-slate-900 sm:text-[2rem] md:text-[1.75rem] lg:text-[clamp(1.8rem,2.8vw,3.2rem)]">
+              Зручний пошук
+              <br />
+              онлайн-сервісів міста
+            </h2>
+            <p className="max-w-lg text-[14px] font-semibold leading-relaxed text-slate-600 sm:text-[15px] md:text-[14px] lg:text-[15px]">
+              Від медицини та освіти до розкладу транспорту й державних сервісів — все зібрано в одному місці.
+            </p>
           </div>
 
-          {/* Розділювач + опис + nav + кнопки — все в одному рядку на десктопі */}
-          <div
-            className="mt-4 mb-5 flex flex-col gap-4 sm:mt-5 lg:flex-row lg:items-end lg:justify-between lg:gap-8"
-            style={{
-              opacity: loaded ? 1 : 0,
-              transform: loaded ? "translateY(0)" : "translateY(14px)",
-              transition: "opacity 1s ease 0.35s, transform 1s ease 0.35s",
-            }}
-          >
-            {/* Ліво: опис */}
-            <p
-              className="max-w-xs text-[13px] leading-relaxed text-white/55 sm:text-[15px] lg:max-w-sm"
-              style={{ textShadow: "0 1px 8px rgba(0,0,0,0.9)" }}
+          {/* typing */}
+          <div className="flex min-h-[24px] flex-wrap items-center gap-2">
+            <span className="text-[13px] font-medium text-slate-400 sm:text-[14px]">Наприклад:</span>
+            <TypingAnimation
+              typeSpeed={45}
+              words={["Записатись до лікаря 🏥", "Електронна черга до школи 🧑🏻‍🎓", "Соціальні послуги 👩🏻‍🦼", "Комунальні сервіси 🏙️"]}
+              loop
+              className="text-[13px] font-semibold text-sky-600 sm:text-[14px]"
+            />
+          </div>
+
+          {/* CTA */}
+          <div className="flex flex-wrap gap-3">
+            <Button asChild size="lg" className="rounded-full px-7 text-[14px] sm:px-9 sm:text-[15px]">
+              <Link href="/categories">
+                Переглянути сервіси
+                <ArrowRight className="ml-2 size-4" />
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="rounded-full border-slate-300/70 bg-white/60 px-7 text-[14px] backdrop-blur-sm hover:bg-white sm:px-9 sm:text-[15px]"
             >
-              Єдине вікно для взаємодії з містом — сервіси, організації та ресурси для мешканців Черкас.
-            </p>
+              <Link href="/about">Про проєкт</Link>
+            </Button>
+          </div>
 
-            {/* Право: nav + пошук + кнопки */}
-            <div className="flex flex-col gap-3 lg:items-end">
-
-              {/* Кнопки */}
-              <div className="flex gap-2">
-                <Link
-                  href="/categories"
-                  className="group flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-[13px] font-bold text-black transition-all duration-300 hover:bg-white/90 hover:shadow-[0_0_28px_rgba(255,255,255,0.2)] sm:px-6 sm:text-[14px]"
-                >
-                  Категорії
-                  <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5" />
-                </Link>
-                <Link
-                  href="/resources"
-                  className="flex items-center rounded-full border border-white/22 bg-white/10 px-5 py-2.5 text-[13px] font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-white/40 hover:bg-white/18 sm:px-6 sm:text-[14px]"
-                >
-                  Ресурси
-                </Link>
-                <Link
-                  href="/about"
-                  className="flex items-center rounded-full border border-white/22 bg-white/10 px-5 py-2.5 text-[13px] font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-white/40 hover:bg-white/18 sm:px-6 sm:text-[14px]"
-                >
-                  Про нас
-                </Link>
+          {/* stats */}
+          <div className="grid grid-cols-3 gap-3 border-t border-slate-200/70 pt-4 sm:gap-6 sm:pt-6">
+            {STATS.map(({ icon: Icon, value, label }) => (
+              <div key={value} className="flex flex-col gap-1">
+                <div className="flex items-center gap-1.5">
+                  <Icon className="size-3.5 shrink-0 text-sky-500" />
+                  <span className="text-[11px] font-bold text-slate-800 sm:text-[13px]">{value}</span>
+                </div>
+                <p className="text-[9px] leading-snug text-slate-500 sm:text-[11px]">{label}</p>
               </div>
-            </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── RIGHT: iPhone ── */}
+        {/* hidden on mobile, visible tablet+ */}
+        <div className="hidden w-full items-center justify-center self-center md:flex">
+          <div className="relative w-[200px] drop-shadow-2xl lg:w-[280px] xl:w-[340px]">
+            <Image src={iphone} alt="СітіЧЕ на iPhone" width={380} height={780} className="w-full object-contain" priority />
           </div>
         </div>
       </div>

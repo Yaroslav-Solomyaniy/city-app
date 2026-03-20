@@ -40,7 +40,6 @@ export default function ResourcesClient({ resources, categories }: Props) {
   const [view, setView] = useState<ViewMode>(urlView)
   const [recentOpen, setRecentOpen] = useState(false)
 
-  // Debounce search → URL
   useEffect(() => {
     const timer = setTimeout(() => {
       const params = new URLSearchParams(searchParamsRef.current.toString())
@@ -51,7 +50,6 @@ export default function ResourcesClient({ resources, categories }: Props) {
     return () => clearTimeout(timer)
   }, [search, router])
 
-  // Category/view → URL
   useEffect(() => {
     const params = new URLSearchParams(searchParamsRef.current.toString())
     if (activeCategory !== "all") params.set("cat", activeCategory)
@@ -75,10 +73,7 @@ export default function ResourcesClient({ resources, categories }: Props) {
     })
   }, [resources, activeCategory, search])
 
-  const recentlyAdded = useMemo(
-    () => [...resources].slice(0, 8), // вже відсортовані desc за createdAt
-    [resources]
-  )
+  const recentlyAdded = useMemo(() => [...resources].slice(0, 8), [resources])
 
   const sidebarSlot = (
     <>
@@ -88,9 +83,7 @@ export default function ResourcesClient({ resources, categories }: Props) {
           <div className="flex flex-col gap-0.5">
             <button
               onClick={() => setActiveCategory("all")}
-              className={`flex items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium transition-colors ${
-                activeCategory === "all" ? "bg-primary/15 text-primary" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-              }`}
+              className={`flex items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium transition-colors ${activeCategory === "all" ? "bg-primary/15 text-primary" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"}`}
             >
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-current opacity-60" />
               Всі категорії
@@ -103,9 +96,7 @@ export default function ResourcesClient({ resources, categories }: Props) {
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`flex items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium transition-colors ${
-                    activeCategory === cat.id ? "bg-primary/15 text-primary" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-                  }`}
+                  className={`flex items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium transition-colors ${activeCategory === cat.id ? "bg-primary/15 text-primary" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"}`}
                 >
                   <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-current opacity-60" />
                   {cat.title}
@@ -174,15 +165,10 @@ export default function ResourcesClient({ resources, categories }: Props) {
           <h1 className="mb-2 text-[clamp(28px,4vw,48px)] leading-tight font-bold text-foreground">Корисні ресурси</h1>
           <p className="text-[15px] text-muted-foreground">{resources.length} ресурсів · зовнішні сайти та сервіси для мешканців Черкас</p>
 
-          {/* Мобільні фільтри */}
           <div className="mt-4 flex flex-wrap gap-2 lg:hidden">
             <button
               onClick={() => setActiveCategory("all")}
-              className={`rounded-full border px-3.5 py-1.5 text-[12.5px] font-medium transition-all duration-150 ${
-                activeCategory === "all"
-                  ? "border-primary/30 bg-primary/10 text-primary"
-                  : "border-border bg-muted/40 text-muted-foreground hover:text-foreground"
-              }`}
+              className={`rounded-full border px-3.5 py-1.5 text-[12.5px] font-medium transition-all duration-150 ${activeCategory === "all" ? "border-primary/30 bg-primary/10 text-primary" : "border-border bg-muted/40 text-muted-foreground hover:text-foreground"}`}
             >
               Всі
             </button>
@@ -193,11 +179,7 @@ export default function ResourcesClient({ resources, categories }: Props) {
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`rounded-full border px-3.5 py-1.5 text-[12.5px] font-medium transition-all duration-150 ${
-                    activeCategory === cat.id
-                      ? "border-primary/30 bg-primary/10 text-primary"
-                      : "border-border bg-muted/40 text-muted-foreground hover:text-foreground"
-                  }`}
+                  className={`rounded-full border px-3.5 py-1.5 text-[12.5px] font-medium transition-all duration-150 ${activeCategory === cat.id ? "border-primary/30 bg-primary/10 text-primary" : "border-border bg-muted/40 text-muted-foreground hover:text-foreground"}`}
                 >
                   {cat.title}
                 </button>
@@ -213,13 +195,7 @@ export default function ResourcesClient({ resources, categories }: Props) {
           setView={setView}
           searchPlaceholder="Пошук ресурсів..."
           extraNavItems={[
-            {
-              key: "recent",
-              icon: <Clock size={18} />,
-              label: "Нещодавні",
-              active: recentOpen,
-              onClick: () => setRecentOpen(true),
-            },
+            { key: "recent", icon: <Clock size={18} />, label: "Нещодавні", active: recentOpen, onClick: () => setRecentOpen(true) },
           ]}
           sidebarSlot={sidebarSlot}
         >
@@ -255,7 +231,6 @@ export default function ResourcesClient({ resources, categories }: Props) {
         </PageLayout>
       </div>
 
-      {/* Dialog нещодавніх */}
       <Dialog open={recentOpen} onOpenChange={setRecentOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -308,8 +283,6 @@ export default function ResourcesClient({ resources, categories }: Props) {
   )
 }
 
-// ── Grid ──────────────────────────────────────────────────────
-
 function ResourcesGrid({ resources }: { resources: ResourceWithCategory[] }) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -352,8 +325,6 @@ function ResourcesGrid({ resources }: { resources: ResourceWithCategory[] }) {
   )
 }
 
-// ── List ──────────────────────────────────────────────────────
-
 function ResourcesList({ resources }: { resources: ResourceWithCategory[] }) {
   return (
     <div className="flex flex-col gap-2">
@@ -389,8 +360,6 @@ function ResourcesList({ resources }: { resources: ResourceWithCategory[] }) {
   )
 }
 
-// ── Table ─────────────────────────────────────────────────────
-
 function ResourcesTable({ resources, total }: { resources: ResourceWithCategory[]; total: number }) {
   return (
     <Card className="overflow-hidden rounded-2xl border p-0 shadow-sm">
@@ -417,13 +386,13 @@ function ResourcesTable({ resources, total }: { resources: ResourceWithCategory[
                   className="group cursor-pointer border-b transition-colors last:border-0 hover:bg-muted/30"
                   onClick={() => window.open(res.url, "_blank")}
                 >
-                  <TableCell className="py-3.5 pl-5">
+                  <TableCell className="w-full max-w-0 py-3.5 pl-5">
                     <div className="flex items-center gap-3">
                       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg" style={{ background: res.category.bg }}>
                         <Icon size={14} color={res.category.accent} strokeWidth={1.8} />
                       </div>
-                      <div className="min-w-0">
-                        <p className="text-[13px] font-semibold text-foreground">{res.title}</p>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-[13px] font-semibold text-foreground">{res.title}</p>
                         {res.description && <p className="truncate text-[11px] text-muted-foreground">{res.description}</p>}
                       </div>
                     </div>

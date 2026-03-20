@@ -179,23 +179,6 @@ export default function AdminCategoriesClient({ categories: initial }: { categor
         </Button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {[
-          { label: "Категорій", value: categories.length },
-          { label: "Ресурсів", value: totalRes },
-          { label: "Знайдено", value: filtered.length },
-          { label: "Без ресурсів", value: categories.filter((c) => c._count.resources === 0).length },
-        ].map((s) => (
-          <Card key={s.label}>
-            <CardContent className="px-4 py-3">
-              <p className="text-[20px] font-bold text-foreground">{s.value}</p>
-              <p className="mt-0.5 text-[11.5px] text-muted-foreground">{s.label}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
       {/* Search + sort */}
       <div className="flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
