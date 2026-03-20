@@ -8,6 +8,7 @@ import ConditionalHeader from "@/components/conditinal-header"
 import "./globals.css"
 import AdminPreviewBar from "@/components/admin-preview-bar"
 import { Toaster } from "sonner"
+import { NuqsAdapter } from "nuqs/adapters/next"
 
 const publicSans = Public_Sans({ subsets: ["latin"], variable: "--font-sans" })
 const nunito = Nunito_Sans({
@@ -44,14 +45,16 @@ export default function RootLayout({ children }: Props) {
       className={cn("antialiased", fontMono.variable, "font-sans", publicSans.variable, nunito.variable)}
     >
       <body>
-        <ThemeProvider>
-          <TooltipProvider>
-            <ConditionalHeader />
-            <Toaster position={"top-center"} />
-            {children}
-          </TooltipProvider>
-        </ThemeProvider>
-        <AdminPreviewBar />
+        <NuqsAdapter>
+          <ThemeProvider>
+            <TooltipProvider>
+              <ConditionalHeader />
+              <Toaster position={"top-center"} />
+              {children}
+              <AdminPreviewBar />
+            </TooltipProvider>
+          </ThemeProvider>
+        </NuqsAdapter>
       </body>
     </html>
   )

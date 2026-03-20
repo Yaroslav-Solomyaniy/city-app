@@ -2,8 +2,7 @@
 "use client"
 
 import Link from "next/link"
-import React, { useMemo, useState, useEffect, useRef } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import React, { useMemo, useState } from "react"
 import {
   AlertCircle,
   Baby,
@@ -19,8 +18,6 @@ import {
   Users,
   Zap,
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { ViewMode, DEFAULT_VIEW } from "@/constants/view-mode"
 import PageLayout from "@/components/page-sidebar/page-layout"
@@ -30,6 +27,7 @@ import CategoriesList from "./_components/categories-list"
 import CategoriesTable from "./_components/categories-table"
 import { plural, wordForm } from "@/lib/plural"
 import EmptyState from "@/components/empty-state"
+import { parseAsString, useQueryState } from "nuqs"
 
 const ICON_MAP: Record<string, React.ElementType> = {
   Heart,
@@ -47,16 +45,8 @@ const ICON_MAP: Record<string, React.ElementType> = {
 }
 
 export default function CategoriesClient({ categories }: { categories: CategoryWithCount[] }) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const searchParamsRef = useRef(searchParams)
-  useEffect(() => {
-    searchParamsRef.current = searchParams
-  }, [searchParams])
-
-  const [search, setSearch] = useState(searchParams.get("q") ?? "")
-  const [view, setView] = useState<ViewMode>((searchParams.get("view") as ViewMode) ?? DEFAULT_VIEW)
-  const [topOpen, setTopOpen] = useState(false)
+  const [search, setSearch] = useQueryState("q", parseAsString.withDefault("").withOptions({ throttleMs: 300, shallow: true }))
+  const [view, setView] = useQueryState("view", parseAsString.withDefault(DEFAULT_VIEW).withOptions({ shallow: true }))
   const [statsOpen, setStatsOpen] = useState(false)
 
   const filtered = useMemo(
@@ -71,26 +61,7 @@ export default function CategoriesClient({ categories }: { categories: CategoryW
     [search, categories]
   )
 
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const params = new URLSearchParams(searchParamsRef.current.toString())
-      if (search) params.set("q", search)
-      else params.delete("q")
-      router.replace(`?${params.toString()}`, { scroll: false })
-    }, 300)
-    return () => clearTimeout(timer)
-  }, [search, router])
-
-  useEffect(() => {
-    const params = new URLSearchParams(searchParamsRef.current.toString())
-    if (view !== DEFAULT_VIEW) params.set("view", view)
-    else params.delete("view")
-    router.replace(`?${params.toString()}`, { scroll: false })
-  }, [view, router])
-
   const totalResources = categories.reduce((s, c) => s + c._count.resources, 0)
-
 
   const stats = [
     { value: categories.length, word: "категорія" },
@@ -114,7 +85,7 @@ export default function CategoriesClient({ categories }: { categories: CategoryW
       </div>
 
       <div className="border-b px-5 py-2.5">
-        <p className="text-[11px] font-semibold tracking-widest text-muted-foreground uppercase">Останні додані</p>
+        <p className="tracking-widests text-[11px] font-semibold text-muted-foreground uppercase">Останні додані</p>
       </div>
       {[...categories]
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
@@ -178,7 +149,7 @@ export default function CategoriesClient({ categories }: { categories: CategoryW
         <PageLayout
           search={search}
           setSearch={setSearch}
-          view={view}
+          view={view as ViewMode}
           setView={setView}
           searchPlaceholder="Пошук категорії..."
           extraNavItems={[
@@ -188,13 +159,6 @@ export default function CategoriesClient({ categories }: { categories: CategoryW
               label: "Статистика",
               active: statsOpen,
               onClick: () => setStatsOpen(true),
-            },
-            {
-              key: "top",
-              icon: <BarChart2 size={18} />,
-              label: "Топ",
-              active: topOpen,
-              onClick: () => setTopOpen(true),
             },
           ]}
           sidebarSlot={sidebarBlock}
@@ -215,7 +179,6 @@ export default function CategoriesClient({ categories }: { categories: CategoryW
         </PageLayout>
       </div>
 
-      {/* Модалка статистики — мобільний */}
       <Dialog open={statsOpen} onOpenChange={setStatsOpen}>
         <DialogContent className="max-w-sm overflow-hidden p-0">
           <DialogHeader className="border-b px-5 py-4">
