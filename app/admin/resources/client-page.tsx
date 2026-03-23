@@ -41,6 +41,7 @@ import { updateResource } from "@/actions/resource/update-resource"
 import { deleteResource } from "@/actions/resource/delete-resource"
 import { moveResource } from "@/actions/resource/move-resource"
 import { CategoryWithSubs, ResourceWithRelations } from "@/types/action"
+import EmptyState from "@/components/empty-state"
 
 interface Props {
   resources: ResourceWithRelations[]
@@ -323,18 +324,8 @@ export default function AdminResourcesClient({ resources: initial, categories }:
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="py-16 text-center">
-                    <p className="mb-2 text-3xl">🔍</p>
-                    <p className="mb-1 font-semibold text-foreground">Нічого не знайдено</p>
-                    <Button
-                      variant="link"
-                      onClick={() => {
-                        setSearch("")
-                        setFilterCatId(null)
-                      }}
-                    >
-                      Скинути фільтри
-                    </Button>
+                  <TableCell colSpan={6} className="px-5 py-5">
+                    <EmptyState variant={search ? "search" : "empty"} query={search} onResetSearch={() => setSearch("")} />
                   </TableCell>
                 </TableRow>
               ) : (

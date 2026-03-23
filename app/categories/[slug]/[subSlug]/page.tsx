@@ -1,7 +1,7 @@
 "use server"
 
 import { notFound } from "next/navigation"
-import { getCategoryBySlug } from "@/actions/category/get-category-by-slug"
+import { getCategoryBySlug, getCategoryBySlugFull } from "@/actions/category/get-category-by-slug"
 import SubCategoryPageClient from "./client-page"
 
 export default async function SubCategoryPage({
@@ -9,23 +9,19 @@ export default async function SubCategoryPage({
   searchParams,
 }: {
   params: Promise<{ slug: string; subSlug: string }>
-  searchParams: Promise<{ q?: string; view?: string }>
+  searchParams: Promise<{ q?: string }>
 }) {
   const { slug, subSlug } = await params
-  const { q, view } = await searchParams
+  const { q } = await searchParams
 
-  const category = await getCategoryBySlug(slug)
-  if (!category) notFound()
+  const [category, allCategory] = await Promise.all([getCategoryBySlug(slug, q), getCategoryBySlugFull(slug)])
+
+  if (!category || !allCategory) notFound()
 
   const subcategory = category.subcategories.find((s) => s.slug === subSlug)
-  if (!subcategory) notFound()
+  const allSubcategory = allCategory.subcategories.find((s) => s.slug === subSlug)
 
-  return (
-    <SubCategoryPageClient
-      category={category}
-      subcategory={subcategory}
-      initialSearch={q ?? ""}
-      initialView={(view as "grid" | "list" | "table") ?? undefined}
-    />
-  )
+  if (!subcategory || !allSubcategory) notFound()
+
+  return <SubCategoryPageClient category={category} allCategory={allCategory} subcategory={subcategory} />
 }

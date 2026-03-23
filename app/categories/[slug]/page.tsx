@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import { getCategoryBySlug } from "@/actions/category/get-category-by-slug"
+import { getCategoryBySlug, getCategoryBySlugFull } from "@/actions/category/get-category-by-slug"
 import CategoryPageClient from "@/app/categories/[slug]/client-page"
 
 export default async function CategoryPage({
@@ -10,17 +10,11 @@ export default async function CategoryPage({
   searchParams: Promise<{ q?: string; view?: string }>
 }) {
   const { slug } = await params
-  const { q, view } = await searchParams
+  const { q } = await searchParams
 
-  const category = await getCategoryBySlug(slug)
-  if (!category) notFound()
+  const [category, allCategory] = await Promise.all([getCategoryBySlug(slug, q), getCategoryBySlugFull(slug)])
 
-  return (
-    <CategoryPageClient
-      category={category}
-      initialSub={null}
-      initialSearch={q ?? ""}
-      initialView={(view as "grid" | "list" | "table") ?? undefined}
-    />
-  )
+  if (!category || !allCategory) notFound()
+
+  return <CategoryPageClient category={category} allCategory={allCategory} />
 }

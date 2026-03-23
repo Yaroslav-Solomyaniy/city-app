@@ -1,29 +1,33 @@
 // lib/format-date.ts
 
+import { format, isToday, isYesterday } from "date-fns"
+import { uk } from "date-fns/locale"
+
 export function formatDate(date: Date): string {
-  return date.toLocaleDateString("uk-UA", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  })
+  return format(date, "dd.MM.yyyy", { locale: uk })
 }
 
 export function formatDateLabel(dateStr: string): string {
-  const d = new Date(dateStr)
-  const today = new Date()
-  const yesterday = new Date(today)
-  yesterday.setDate(today.getDate() - 1)
-  if (d.toDateString() === today.toDateString()) return "Сьогодні"
-  if (d.toDateString() === yesterday.toDateString()) return "Вчора"
-  return d.toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" })
+  const date = new Date(dateStr)
+
+  if (isToday(date)) return "Сьогодні"
+  if (isYesterday(date)) return "Вчора"
+
+  return format(date, "d MMMM yyyy", { locale: uk })
 }
 
 export function groupByDate<T extends { createdAt: string }>(items: T[]): { date: string; items: T[] }[] {
   const map = new Map<string, T[]>()
+
   items.forEach((item) => {
-    const date = item.createdAt.split("T")[0]
-    if (!map.has(date)) map.set(date, [])
-    map.get(date)!.push(item)
+    const dateKey = format(new Date(item.createdAt), "yyyy-MM-dd")
+
+    if (!map.has(dateKey)) map.set(dateKey, [])
+    map.get(dateKey)!.push(item)
   })
-  return Array.from(map.entries()).map(([date, items]) => ({ date, items }))
+
+  return Array.from(map.entries()).map(([date, items]) => ({
+    date,
+    items,
+  }))
 }

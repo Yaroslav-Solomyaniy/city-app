@@ -36,6 +36,7 @@ import ImageUpload from "@/components/image-upload"
 import { CategoryFormData, createCategory } from "@/actions/category/create-category"
 import { updateCategory } from "@/actions/category/update-category"
 import { deleteCategory } from "@/actions/category/delete-category"
+import EmptyState from "@/components/empty-state"
 
 type SortCol = "title" | "res" | "createdAt"
 
@@ -236,12 +237,8 @@ export default function AdminCategoriesClient({ categories: initial }: { categor
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="py-16 text-center">
-                    <p className="mb-2 text-3xl">🔍</p>
-                    <p className="mb-1 font-semibold text-foreground">Нічого не знайдено</p>
-                    <Button variant="link" onClick={() => setSearch("")}>
-                      Скинути пошук
-                    </Button>
+                  <TableCell colSpan={5} className="py-5 px-5">
+                    <EmptyState variant={search ? "search" : "empty"} query={search} onResetSearch={() => setSearch("")} />
                   </TableCell>
                 </TableRow>
               ) : (

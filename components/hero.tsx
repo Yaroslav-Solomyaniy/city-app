@@ -72,7 +72,7 @@ export default function Hero() {
               <br />
               онлайн-сервісів міста
             </h2>
-            <p className="max-w-lg text-[14px] font-semibold leading-relaxed text-slate-600 sm:text-[15px] md:text-[14px] lg:text-[15px]">
+            <p className="max-w-lg text-[14px] leading-relaxed font-semibold text-slate-600 sm:text-[15px] md:text-[14px] lg:text-[15px]">
               Від медицини та освіти до розкладу транспорту й державних сервісів — все зібрано в одному місці.
             </p>
           </div>
@@ -82,7 +82,7 @@ export default function Hero() {
             <span className="text-[13px] font-medium text-slate-400 sm:text-[14px]">Наприклад:</span>
             <TypingAnimation
               typeSpeed={45}
-              words={["Записатись до лікаря 🏥", "Електронна черга до школи 🧑🏻‍🎓", "Соціальні послуги 👩🏻‍🦼", "Комунальні сервіси 🏙️"]}
+              words={["Записатись до лікаря 🏥️", "Електронна черга до школи 🏫", "Соціальні послуги ♿️", "Комунальні сервіси 💧⚡"]}
               loop
               className="text-[13px] font-semibold text-sky-600 sm:text-[14px]"
             />
@@ -106,18 +106,18 @@ export default function Hero() {
             </Button>
           </div>
 
-          {/* stats */}
-          <div className="grid grid-cols-3 gap-3 border-t border-slate-200/70 pt-4 sm:gap-6 sm:pt-6">
-            {STATS.map(({ icon: Icon, value, label }) => (
-              <div key={value} className="flex flex-col gap-1">
-                <div className="flex items-center gap-1.5">
-                  <Icon className="size-3.5 shrink-0 text-sky-500" />
-                  <span className="text-[11px] font-bold text-slate-800 sm:text-[13px]">{value}</span>
-                </div>
-                <p className="text-[9px] leading-snug text-slate-500 sm:text-[11px]">{label}</p>
-              </div>
-            ))}
-          </div>
+          {/*/!* stats *!/*/}
+          {/*<div className="grid grid-cols-3 gap-3 border-t border-slate-200/70 pt-4 sm:gap-6 sm:pt-6">*/}
+          {/*  {STATS.map(({ icon: Icon, value, label }) => (*/}
+          {/*    <div key={value} className="flex flex-col gap-1">*/}
+          {/*      <div className="flex items-center gap-1.5">*/}
+          {/*        <Icon className="size-3.5 shrink-0 text-sky-500" />*/}
+          {/*        <span className="text-[11px] font-bold text-slate-800 sm:text-[13px]">{value}</span>*/}
+          {/*      </div>*/}
+          {/*      <p className="text-[9px] leading-snug text-slate-500 sm:text-[11px]">{label}</p>*/}
+          {/*    </div>*/}
+          {/*  ))}*/}
+          {/*</div>*/}
         </div>
 
         {/* ── RIGHT: iPhone ── */}

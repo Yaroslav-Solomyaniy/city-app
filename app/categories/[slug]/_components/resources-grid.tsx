@@ -31,9 +31,7 @@ export default function ResourcesGrid({ resources, category }: Props) {
                 <ExternalLink size={13} className="text-muted-foreground opacity-50 transition-opacity group-hover:opacity-100" />
               </div>
               <p className="mb-0.5 text-[13.5px] leading-snug font-semibold text-foreground">{res.title}</p>
-              {res.description && (
-                <p className="mb-3 line-clamp-3 flex-1 text-[12px] leading-relaxed text-muted-foreground">{res.description}</p>
-              )}
+              {res.description && <p className="mb-3 flex-1 text-[12px] leading-relaxed text-muted-foreground">{res.description}</p>}
               <div className="mt-auto flex items-center justify-between border-t pt-3">
                 <span className="text-[11px] text-muted-foreground">{formatDate(res.createdAt)}</span>
                 <span className="flex items-center gap-1 text-[11.5px] font-semibold" style={{ color: category.accent }}>

@@ -20,18 +20,20 @@ export default function ResourcesList({ resources, category }: Props) {
             href={res.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-4 rounded-2xl border bg-card px-5 py-4 no-underline shadow-sm transition-all duration-200 hover:translate-x-1 hover:shadow-md"
+            className="group flex items-start gap-4 rounded-2xl border bg-card px-5 py-4 no-underline shadow-sm transition-all duration-200 hover:translate-x-1 hover:shadow-md"
           >
-            <div className="w-1 shrink-0 self-stretch rounded-full" style={{ background: category.accent }} />
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl" style={{ background: category.bg }}>
+            <div className="mt-0.5 w-1 shrink-0 self-stretch rounded-full" style={{ background: category.accent }} />
+            <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl" style={{ background: category.bg }}>
               <Icon size={18} color={category.accent} strokeWidth={1.8} />
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[14px] leading-tight font-semibold text-foreground">{res.title}</p>
-              {res.description && <p className="mt-0.5 truncate text-[13px] text-muted-foreground">{res.description}</p>}
+              {res.description && <p className="mt-0.5 line-clamp-2 text-[13px] leading-relaxed text-muted-foreground">{res.description}</p>}
             </div>
-            <span className="hidden shrink-0 text-[11px] whitespace-nowrap text-muted-foreground sm:block">{formatDate(res.createdAt)}</span>
-            <ExternalLink size={15} className="shrink-0 text-muted-foreground" />
+            <div className="ml-auto flex shrink-0 flex-col items-end gap-2 pt-0.5">
+              <span className="hidden text-[11px] whitespace-nowrap text-muted-foreground sm:block">{formatDate(res.createdAt)}</span>
+              <ExternalLink size={15} className="text-muted-foreground" />
+            </div>
           </a>
         )
       })}
