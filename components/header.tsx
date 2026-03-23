@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
+import Image from "next/image"
 
 export default function Header() {
   const pathname = usePathname()
@@ -99,16 +100,18 @@ export default function Header() {
             <MobileMenu isActive={isActive} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} closeMenu={closeMenu} />
           </div>
 
-          {searchOpen && (
-            <div className="border-t px-4 py-2.5 md:hidden">
-              <Input
-                autoFocus
-                placeholder="Пошук по порталу..."
-                className="h-9"
-                onKeyDown={(e) => e.key === "Escape" && setSearchOpen(false)}
-              />
-            </div>
-          )}
+          <Image src="/kozak.png" alt="Козак" className="block h-8" width={32} height={32} priority={true} />
+
+          {/*{searchOpen && (*/}
+          {/*  <div className="border-t px-4 py-2.5 md:hidden">*/}
+          {/*    <Input*/}
+          {/*      autoFocus*/}
+          {/*      placeholder="Пошук по порталу..."*/}
+          {/*      className="h-9"*/}
+          {/*      onKeyDown={(e) => e.key === "Escape" && setSearchOpen(false)}*/}
+          {/*    />*/}
+          {/*  </div>*/}
+          {/*)}*/}
         </div>
       </div>
     )
@@ -149,28 +152,30 @@ export default function Header() {
 
         <div className="flex-1 md:hidden" />
 
-        <div
-          className={cn(
-            "hidden items-center overflow-hidden rounded-full border transition-all duration-300 md:flex",
-            searchOpen ? "w-50 border-primary/40 bg-muted/50" : "w-8.5 border-transparent"
-          )}
-        >
-          <Button variant="ghost" size="icon-sm" onClick={() => setSearchOpen((o) => !o)} className="shrink-0 rounded-full">
-            {searchOpen ? <X className="size-3.5" /> : <Search className="size-3.5" />}
-          </Button>
-          {searchOpen && (
-            <Input
-              autoFocus
-              placeholder="Пошук..."
-              className="h-auto border-0 bg-transparent px-1 py-0 text-[13px] shadow-none focus-visible:ring-0"
-              onKeyDown={(e) => e.key === "Escape" && setSearchOpen(false)}
-            />
-          )}
-        </div>
+        {/*<div*/}
+        {/*  className={cn(*/}
+        {/*    "hidden items-center overflow-hidden rounded-full border transition-all duration-300 md:flex",*/}
+        {/*    searchOpen ? "w-50 border-primary/40 bg-muted/50" : "w-8.5 border-transparent"*/}
+        {/*  )}*/}
+        {/*>*/}
+        {/*  <Button variant="ghost" size="icon-sm" onClick={() => setSearchOpen((o) => !o)} className="shrink-0 rounded-full">*/}
+        {/*    {searchOpen ? <X className="size-3.5" /> : <Search className="size-3.5" />}*/}
+        {/*  </Button>*/}
+        {/*  {searchOpen && (*/}
+        {/*    <Input*/}
+        {/*      autoFocus*/}
+        {/*      placeholder="Пошук..."*/}
+        {/*      className="h-auto border-0 bg-transparent px-1 py-0 text-[13px] shadow-none focus-visible:ring-0"*/}
+        {/*      onKeyDown={(e) => e.key === "Escape" && setSearchOpen(false)}*/}
+        {/*    />*/}
+        {/*  )}*/}
+        {/*</div>*/}
 
-        <Button variant="ghost" size="icon-sm" className="rounded-xl md:hidden" onClick={() => setSearchOpen((o) => !o)}>
-          {searchOpen ? <X className="size-3.5" /> : <Search className="size-3.5" />}
-        </Button>
+        <img src="/kozak.png" alt="Козак" className="w-8 object-contain" />
+
+        {/*<Button variant="ghost" size="icon-sm" className="rounded-xl md:hidden" onClick={() => setSearchOpen((o) => !o)}>*/}
+        {/*  {searchOpen ? <X className="size-3.5" /> : <Search className="size-3.5" />}*/}
+        {/*</Button>*/}
 
         <MobileMenu isActive={isActive} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} closeMenu={closeMenu} />
       </div>

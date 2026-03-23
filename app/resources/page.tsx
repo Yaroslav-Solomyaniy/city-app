@@ -1,6 +1,12 @@
 import { getResources } from "@/actions/resource/get-resources"
 import { getCategories } from "@/actions/category/get-categories"
 import ResourcesClient from "@/app/resources/client-page"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "СітіЧЕ — список доступних ресурсів",
+  description: "Офіційний довідник ресурсів Черкаської громади",
+}
 
 interface Props {
   searchParams: Promise<{ q?: string; cat?: string; view?: string }>
