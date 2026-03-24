@@ -1,4 +1,6 @@
 import { Suspense } from "react"
+
+export const dynamic = "force-dynamic"
 import { notFound } from "next/navigation"
 import { getCategoryBySlug, getCategoryBySlugFull } from "@/actions/category/get-category-by-slug"
 import SubCategoryPageClient from "./client-page"
