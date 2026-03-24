@@ -71,7 +71,7 @@ export default function ImageUpload({ value, onChange, onPendingChange, label }:
         /* ── Preview ── */
         <div className="relative overflow-hidden rounded-lg border border-input bg-muted">
           <div className="relative h-36 w-full">
-            <Image src={value} alt="Preview" fill className="object-cover" unoptimized={value.includes("/upload_")} />
+            <Image src={value} alt="Preview" fill className="object-cover" unoptimized />
           </div>
           <div className="flex items-center justify-between gap-2 px-3 py-2">
             <p className="truncate text-[11px] text-muted-foreground">{value}</p>

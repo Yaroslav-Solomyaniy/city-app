@@ -70,7 +70,7 @@ export default function SubCategoryPageClient({ category, allCategory, subcatego
             alt={allCategory.title}
             fill
             className="object-cover"
-            unoptimized={allCategory.photo.includes("/upload_")}
+            unoptimized
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40" />
         </div>
