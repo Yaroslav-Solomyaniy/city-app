@@ -49,5 +49,4 @@ prisma/migrations/dev/
 Thumbs.db
 
 # logs
-logs/
 *.log
