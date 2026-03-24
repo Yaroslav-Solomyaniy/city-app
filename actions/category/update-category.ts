@@ -26,8 +26,8 @@ export async function updateCategory(id: string, data: CategoryFormData) {
     },
   })
 
-  revalidatePath("/admin/category")
-  revalidatePath("/category")
+  revalidatePath("/admin/categories")
+  revalidatePath("/categories")
   revalidatePath(`/categories/${category.slug}`)
   return category
 }

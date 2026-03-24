@@ -27,7 +27,7 @@ export default function CategoriesGrid({ categories }: Props) {
 
             {cat.photo && (
               <div className="relative h-32 overflow-hidden bg-muted">
-                <Image src={cat.photo} width={300} height={250} alt={cat.title} priority={true} className="h-full w-full object-cover" />
+                <Image src={cat.photo} width={300} height={250} alt={cat.title} priority={true} className="h-full w-full object-cover" unoptimized />
               </div>
             )}
 
