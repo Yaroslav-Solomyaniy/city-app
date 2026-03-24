@@ -86,8 +86,8 @@ export default function ModalInviteAdmin({ open, onClose }: Props) {
       return
     }
 
-    if (result.data.warning) setWarning(result.data.warning)
-    if (result.data.invite.link) setInviteLink(result.data.invite.link)
+    if (result.data?.warning) setWarning(result.data.warning)
+    if (result.data?.invite.link) setInviteLink(result.data.invite.link)
     setSuccess(true)
   }
 

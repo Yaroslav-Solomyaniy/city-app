@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { notFound } from "next/navigation"
 import { getCategoryBySlug, getCategoryBySlugFull } from "@/actions/category/get-category-by-slug"
 import CategoryPageClient from "@/app/categories/[slug]/client-page"
@@ -16,5 +17,5 @@ export default async function CategoryPage({
 
   if (!category || !allCategory) notFound()
 
-  return <CategoryPageClient category={category} allCategory={allCategory} />
+  return <Suspense><CategoryPageClient category={category} allCategory={allCategory} /></Suspense>
 }

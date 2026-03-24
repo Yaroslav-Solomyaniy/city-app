@@ -1,5 +1,4 @@
-"use server"
-
+import { Suspense } from "react"
 import { notFound } from "next/navigation"
 import { getCategoryBySlug, getCategoryBySlugFull } from "@/actions/category/get-category-by-slug"
 import SubCategoryPageClient from "./client-page"
@@ -23,5 +22,5 @@ export default async function SubCategoryPage({
 
   if (!subcategory || !allSubcategory) notFound()
 
-  return <SubCategoryPageClient category={category} allCategory={allCategory} subcategory={subcategory} />
+  return <Suspense><SubCategoryPageClient category={category} allCategory={allCategory} subcategory={subcategory} /></Suspense>
 }

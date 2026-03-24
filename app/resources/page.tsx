@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { getResources } from "@/actions/resource/get-resources"
 import { getCategories } from "@/actions/category/get-categories"
 import ResourcesClient from "@/app/resources/client-page"
@@ -21,5 +22,5 @@ export default async function ResourcesPage({ searchParams }: Props) {
     getCategories(),
   ])
 
-  return <ResourcesClient resources={resources} allResources={allResources} categories={categories} />
+  return <Suspense><ResourcesClient resources={resources} allResources={allResources} categories={categories} /></Suspense>
 }

@@ -63,14 +63,25 @@ export async function POST(req: NextRequest) {
 
   const hashed = await bcrypt.hash(password, 12)
 
+  const userId = crypto.randomUUID()
+
   // Створюємо юзера і помічаємо токен використаним — в одній транзакції
   await prisma.$transaction([
     prisma.user.create({
       data: {
+        id: userId,
         email: invite.email,
         name: name?.trim() || null,
+        emailVerified: true,
+      },
+    }),
+    prisma.account.create({
+      data: {
+        id: crypto.randomUUID(),
+        accountId: userId,
+        providerId: "credential",
+        userId,
         password: hashed,
-        emailVerified: new Date(),
       },
     }),
     prisma.inviteToken.delete({
