@@ -76,7 +76,30 @@ const LINKS = [
 
 export default function AdminDashboardClient({ categories, resources, admins, feedback }: Props) {
   return (
-    <div className="flex min-h-screen flex-col justify-center">
+    <div className="relative flex min-h-screen flex-col justify-center overflow-hidden">
+      {/* Background — розтягуємо за межі паддінгу main через від'ємні марджини */}
+      <div className="pointer-events-none absolute -inset-x-4 -inset-y-4 sm:-inset-x-6 sm:-inset-y-6 lg:-inset-x-8 lg:-inset-y-8 bg-slate-100">
+        {/* Dot grid */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: "radial-gradient(circle, rgba(100,116,139,0.18) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+        {/* Color blobs */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `
+              radial-gradient(ellipse 70% 55% at 10% 50%, rgba(59,130,246,0.10) 0%, transparent 100%),
+              radial-gradient(ellipse 55% 50% at 88% 15%, rgba(16,185,129,0.09) 0%, transparent 100%),
+              radial-gradient(ellipse 50% 55% at 65% 90%, rgba(139,92,246,0.07) 0%, transparent 100%)
+            `,
+          }}
+        />
+      </div>
+
       <div className="mx-auto w-7xl space-y-8 px-4">
         <div className="flex items-end justify-center gap-2">
           <Image

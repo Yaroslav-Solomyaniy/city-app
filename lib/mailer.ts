@@ -14,16 +14,17 @@ function createTransport() {
   })
 }
 
-export async function sendMagicLink({ to, url, host }: { to: string; url: string; host: string }) {
+async function send(to: string, subject: string, html: string, text: string) {
   const transport = createTransport()
-  await transport.verify()
-  const { subject, html, text } = magicLinkEmail({ url, host })
-  await transport.sendMail({ from: process.env.EMAIL_FROM, to, subject, html, text })
+  try {
+    await transport.sendMail({ from: process.env.EMAIL_FROM, to, subject, html, text })
+  } catch (error) {
+    console.error(`[mailer] Failed to send email to ${to}:`, error)
+    throw new Error("Failed to send email")
+  }
 }
 
 export async function sendInviteEmail({ to, url, host, invitedBy }: { to: string; url: string; host: string; invitedBy?: string }) {
-  const transport = createTransport()
-  await transport.verify()
   const { subject, html, text } = inviteAdminEmail({ url, host, invitedBy })
-  await transport.sendMail({ from: process.env.EMAIL_FROM, to, subject, html, text })
+  await send(to, subject, html, text)
 }

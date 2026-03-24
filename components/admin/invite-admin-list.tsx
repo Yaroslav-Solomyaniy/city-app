@@ -20,25 +20,22 @@ export default function InviteAdminList({ invites }: Props) {
 
   async function handleResend(id: string, email: string) {
     setResendingId(id)
-    toast.promise(resendInvite(id), {
-      loading: "Надсилаємо листа...",
-      success: () => {
-        setResendingId(null)
-        return `Лист надіслано на ${email}`
-      },
-      error: () => {
-        setResendingId(null)
-        return "Не вдалося надіслати лист"
-      },
-    })
+    const result = await resendInvite(id)
+    setResendingId(null)
+    if (result.ok) {
+      toast.success(`Лист надіслано на ${email}`)
+    } else {
+      toast.error(result.error ?? "Не вдалося надіслати лист")
+    }
   }
 
   async function handleRevoke(id: string, email: string) {
-    toast.promise(revokeInvite(id), {
-      loading: "Скасовуємо запрошення...",
-      success: `Запрошення для ${email} скасовано`,
-      error: "Не вдалося скасувати запрошення",
-    })
+    const result = await revokeInvite(id)
+    if (result.ok) {
+      toast.success(`Запрошення для ${email} скасовано`)
+    } else {
+      toast.error(result.error ?? "Не вдалося скасувати запрошення")
+    }
   }
 
   return (

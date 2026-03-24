@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { CheckCircle2, AlertCircle, Mail } from "lucide-react"
+import { CheckCircle2, AlertCircle, Mail, Copy, Check } from "lucide-react"
 import { inviteAdmin } from "@/actions/administrators/invite"
 
 interface Props {
@@ -13,11 +13,50 @@ interface Props {
   onClose: () => void
 }
 
+function SuccessView({ email, warning, inviteLink, onClose }: { email: string; warning: string; inviteLink: string; onClose: () => void }) {
+  const [copied, setCopied] = useState(false)
+
+  function copy() {
+    navigator.clipboard.writeText(inviteLink)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      {warning ? (
+        <div className="flex items-start gap-3 rounded-xl bg-amber-50 px-4 py-3 dark:bg-amber-900/20">
+          <AlertCircle size={16} className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
+          <p className="text-[13px] font-semibold text-amber-700 dark:text-amber-400">{warning}</p>
+        </div>
+      ) : (
+        <div className="flex items-center gap-3 rounded-xl bg-emerald-50 px-4 py-3 dark:bg-emerald-900/20">
+          <CheckCircle2 size={16} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
+          <p className="text-[13px] font-semibold text-emerald-700 dark:text-emerald-400">Запрошення надіслано на {email}</p>
+        </div>
+      )}
+
+      {inviteLink && (
+        <div className="flex items-center gap-2 rounded-xl border bg-muted/40 px-3 py-2">
+          <p className="min-w-0 flex-1 truncate font-mono text-[11px] text-muted-foreground">{inviteLink}</p>
+          <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0" onClick={copy}>
+            {copied ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
+          </Button>
+        </div>
+      )}
+
+      <Button onClick={onClose}>Закрити</Button>
+    </div>
+  )
+}
+
 export default function ModalInviteAdmin({ open, onClose }: Props) {
   const [email, setEmail] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
+  const [warning, setWarning] = useState("")
+  const [inviteLink, setInviteLink] = useState("")
 
   function handleOpenChange(o: boolean) {
     if (!o) handleClose()
@@ -29,6 +68,8 @@ export default function ModalInviteAdmin({ open, onClose }: Props) {
       setEmail("")
       setError("")
       setSuccess(false)
+      setWarning("")
+      setInviteLink("")
     }, 200)
   }
 
@@ -45,6 +86,8 @@ export default function ModalInviteAdmin({ open, onClose }: Props) {
       return
     }
 
+    if (result.data.warning) setWarning(result.data.warning)
+    if (result.data.invite.link) setInviteLink(result.data.invite.link)
     setSuccess(true)
   }
 
@@ -60,14 +103,7 @@ export default function ModalInviteAdmin({ open, onClose }: Props) {
         </DialogHeader>
 
         {success ? (
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3 rounded-xl bg-emerald-50 px-4 py-3 dark:bg-emerald-900/20">
-              <CheckCircle2 size={16} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
-              <p className="text-[13px] font-semibold text-emerald-700 dark:text-emerald-400">Запрошення надіслано на {email}</p>
-            </div>
-            <p className="text-center text-[13px] text-muted-foreground">Адміністратор отримає лист із посиланням для реєстрації.</p>
-            <Button onClick={handleClose}>Закрити</Button>
-          </div>
+          <SuccessView email={email} warning={warning} inviteLink={inviteLink} onClose={handleClose} />
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">

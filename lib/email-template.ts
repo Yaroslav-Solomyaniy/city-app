@@ -110,6 +110,57 @@ export function magicLinkEmail({ url, host }: { url: string; host: string }) {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   Verify Email
+───────────────────────────────────────────────────────────── */
+export function verifyEmail({ url, host }: { url: string; host: string }) {
+  const content = `
+    <tr>
+      <td style="padding:44px 48px 12px;">
+        <h2 style="margin:0 0 12px;color:#111827;font-size:22px;font-weight:700;line-height:1.3;">
+          Підтвердьте email-адресу
+        </h2>
+        <p style="margin:0 0 32px;color:#6b7280;font-size:15px;line-height:1.7;">
+          Натисніть кнопку нижче щоб підтвердити вашу адресу на порталі <strong style="color:#111827;">${host}</strong>.
+          Посилання діє <strong style="color:#111827;">24 години</strong>.
+        </p>
+
+        <table cellpadding="0" cellspacing="0" style="margin:0 auto 32px;">
+          <tr>
+            <td style="background:linear-gradient(135deg,#2563eb,#3b82f6);border-radius:12px;box-shadow:0 4px 16px rgba(37,99,235,0.25);">
+              <a href="${url}" style="display:inline-block;padding:15px 44px;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;letter-spacing:0.01em;">
+                Підтвердити email →
+              </a>
+            </td>
+          </tr>
+        </table>
+
+        <table cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 12px;">
+          <tr>
+            <td style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 20px;">
+              <p style="margin:0;color:#92400e;font-size:13px;line-height:1.6;">
+                ⏳ <strong>Посилання діє 24 години.</strong> Якщо ви не реєструвались — просто ігноруйте цей лист.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:12px 48px 36px;">
+        <p style="margin:0 0 6px;color:#9ca3af;font-size:12px;">Якщо кнопка не працює, скопіюй посилання:</p>
+        <a href="${url}" style="color:#2563eb;font-size:12px;word-break:break-all;">${url}</a>
+      </td>
+    </tr>
+  `
+
+  return {
+    subject: `Підтвердження email · ${BRAND.name}`,
+    html: emailShell(content),
+    text: `Підтвердіть email на ${host}: ${url}\n\nПосилання діє 24 години.`,
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    Invite Admin Email
 ───────────────────────────────────────────────────────────── */
 export function inviteAdminEmail({ url, host, invitedBy }: { url: string; host: string; invitedBy?: string }) {

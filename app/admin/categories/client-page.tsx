@@ -16,8 +16,13 @@ import {
   Check,
   ChevronRight,
   Globe,
+  GripVertical,
+  ArrowDownUp,
 } from "lucide-react"
 import { toast } from "sonner"
+import { DragDropProvider } from "@dnd-kit/react"
+import { useSortable } from "@dnd-kit/react/sortable"
+import { isSortableOperation } from "@dnd-kit/dom/sortable"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -36,9 +41,131 @@ import ImageUpload from "@/components/image-upload"
 import { CategoryFormData, createCategory } from "@/actions/category/create-category"
 import { updateCategory } from "@/actions/category/update-category"
 import { deleteCategory } from "@/actions/category/delete-category"
+import { reorderCategories } from "@/actions/category/reorder-categories"
 import EmptyState from "@/components/empty-state"
 
 type SortCol = "title" | "res" | "createdAt"
+
+function arrayMove<T>(arr: T[], from: number, to: number): T[] {
+  const result = [...arr]
+  const [moved] = result.splice(from, 1)
+  result.splice(to, 0, moved)
+  return result
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SORTABLE ROW
+// ═══════════════════════════════════════════════════════════════
+
+function SortableCategoryRow({
+  cat,
+  index,
+  reorderMode,
+  onNavigate,
+  onEdit,
+  onDelete,
+}: {
+  cat: CategoryWithCount
+  index: number
+  reorderMode: boolean
+  onNavigate: () => void
+  onEdit: () => void
+  onDelete: () => void
+}) {
+  const { ref, handleRef, isDragging } = useSortable({ id: cat.id, index, disabled: !reorderMode })
+  const Icon = ICON_MAP[cat.iconName] ?? ICON_MAP.Building2
+
+  return (
+    <TableRow
+      ref={ref}
+      className={cn(
+        "group border-b transition-colors last:border-0",
+        reorderMode ? "hover:bg-muted/30" : "cursor-pointer hover:bg-muted/30",
+        isDragging && "opacity-40"
+      )}
+      onClick={reorderMode ? undefined : onNavigate}
+    >
+      {/* Drag handle (reorder mode only) */}
+      {reorderMode && (
+        <TableCell className="w-8 py-3.5 pl-3 pr-0" onClick={(e) => e.stopPropagation()}>
+          <span
+            ref={handleRef}
+            className="flex cursor-grab items-center justify-center text-muted-foreground active:cursor-grabbing"
+          >
+            <GripVertical size={16} />
+          </span>
+        </TableCell>
+      )}
+
+      <TableCell className="py-3.5 pl-5">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" style={{ background: cat.bg }}>
+            <Icon size={16} color={cat.accent} strokeWidth={1.8} />
+          </div>
+          <div className="min-w-0">
+            <p className="text-[13.5px] leading-tight font-semibold text-foreground">{cat.title}</p>
+            <p className="text-[11px] text-muted-foreground">{cat.titleEn}</p>
+          </div>
+        </div>
+      </TableCell>
+
+      <TableCell className="hidden py-3.5 md:table-cell">
+        <div className="flex flex-wrap gap-1">
+          {cat.services.slice(0, 2).map((s) => (
+            <Badge key={s} variant="secondary" className="text-[11px]">
+              {s}
+            </Badge>
+          ))}
+          {cat.services.length > 2 && <span className="text-[11px] text-muted-foreground">+{cat.services.length - 2}</span>}
+        </div>
+      </TableCell>
+
+      <TableCell className="py-3.5">
+        <span
+          className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-semibold"
+          style={{ background: cat.bg, color: cat.accent }}
+        >
+          <Globe size={10} />
+          {cat._count.resources}
+        </span>
+      </TableCell>
+
+      <TableCell className="hidden py-3.5 sm:table-cell">
+        <span className="text-[12px] text-muted-foreground">
+          {new Date(cat.createdAt).toLocaleDateString("uk-UA", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          })}
+        </span>
+      </TableCell>
+
+      <TableCell className="py-3.5 pr-3" onClick={(e) => e.stopPropagation()}>
+        {reorderMode ? null : (
+          <div className="flex items-center gap-1">
+            <ChevronRight size={14} className="text-muted-foreground/40" />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100">
+                  <MoreHorizontal size={16} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-44">
+                <DropdownMenuItem onClick={onEdit}>
+                  <Pencil size={14} /> Редагувати
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="text-destructive" onClick={onDelete}>
+                  <Trash2 size={14} /> Видалити
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )}
+      </TableCell>
+    </TableRow>
+  )
+}
 
 // ═══════════════════════════════════════════════════════════════
 // CLIENT PAGE
@@ -55,8 +182,11 @@ export default function AdminCategoriesClient({ categories: initial }: { categor
   const [showAdd, setShowAdd] = useState(false)
   const [editItem, setEditItem] = useState<CategoryWithCount | null>(null)
   const [deleteItem, setDeleteItem] = useState<CategoryWithCount | null>(null)
+  const [reorderMode, setReorderMode] = useState(false)
+  const [orderSnapshot, setOrderSnapshot] = useState<CategoryWithCount[]>([])
 
   const filtered = useMemo(() => {
+    if (reorderMode) return categories
     const q = search.toLowerCase()
     const list = categories.filter(
       (c) =>
@@ -70,7 +200,7 @@ export default function AdminCategoriesClient({ categories: initial }: { categor
       return sortDir === "asc" ? cmp : -cmp
     })
     return list
-  }, [categories, search, sortBy, sortDir])
+  }, [categories, search, sortBy, sortDir, reorderMode])
 
   const toggleSort = (col: SortCol) => {
     if (sortBy === col) setSortDir((d) => (d === "asc" ? "desc" : "asc"))
@@ -82,14 +212,38 @@ export default function AdminCategoriesClient({ categories: initial }: { categor
 
   const totalRes = categories.reduce((s, c) => s + c._count.resources, 0)
 
-  // ── Handlers ──────────────────────────────────────────────
+  // ── Reorder ────────────────────────────────────────────────
+
+  function startReorder() {
+    setOrderSnapshot(categories)
+    setReorderMode(true)
+  }
+
+  function cancelReorder() {
+    setCategories(orderSnapshot)
+    setReorderMode(false)
+  }
+
+  async function saveReorder() {
+    startTransition(async () => {
+      try {
+        await reorderCategories(categories.map((c, i) => ({ id: c.id, order: i })))
+        setReorderMode(false)
+        toast.success("Порядок збережено")
+        router.refresh()
+      } catch {
+        toast.error("Не вдалося зберегти порядок")
+      }
+    })
+  }
+
+  // ── CRUD Handlers ─────────────────────────────────────────
 
   async function handleAdd(data: CategoryFormData) {
     let created
     try {
       created = await createCategory(data)
     } catch {
-      // createCategory впала — видаляємо щойно завантажений файл
       if (data.photo?.includes("/upload_")) {
         await fetch("/api/upload", {
           method: "DELETE",
@@ -101,7 +255,6 @@ export default function AdminCategoriesClient({ categories: initial }: { categor
       return
     }
 
-    // Все ок — оновлюємо UI
     startTransition(() => {
       setCategories((prev) => [...prev, { ...created, _count: { resources: 0 } }])
       setShowAdd(false)
@@ -120,8 +273,6 @@ export default function AdminCategoriesClient({ categories: initial }: { categor
         setEditItem(null)
         toast.success("Зміни збережено")
 
-        // Видаляємо старе фото з диску тільки після успішного save
-        // і тільки якщо воно змінилось і було нашим upload файлом
         if (originalPhoto && originalPhoto !== updated.photo && originalPhoto.includes("/upload_")) {
           await fetch("/api/upload", {
             method: "DELETE",
@@ -132,7 +283,6 @@ export default function AdminCategoriesClient({ categories: initial }: { categor
 
         router.refresh()
       } catch {
-        // Save провалився — видаляємо щойно завантажений новий файл
         if (formData.photo?.includes("/upload_") && formData.photo !== editItem.photo) {
           await fetch("/api/upload", {
             method: "DELETE",
@@ -175,156 +325,135 @@ export default function AdminCategoriesClient({ categories: initial }: { categor
             {categories.length} категорій · {totalRes} ресурсів
           </p>
         </div>
-        <Button onClick={() => setShowAdd(true)} className="shrink-0 gap-2">
-          <Plus size={16} /> Додати категорію
-        </Button>
-      </div>
-
-      {/* Search + sort */}
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <div className="relative flex-1">
-          <Search size={15} className="absolute top-1/2 left-3.5 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Пошук категорій..." value={search} onChange={(e) => setSearch(e.target.value)} className="pr-9 pl-9" />
-          {search && (
-            <button
-              onClick={() => setSearch("")}
-              className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            >
-              <X size={14} />
-            </button>
+        <div className="flex shrink-0 gap-2">
+          {reorderMode ? (
+            <>
+              <Button variant="outline" onClick={cancelReorder} disabled={isPending}>
+                Скасувати
+              </Button>
+              <Button onClick={saveReorder} disabled={isPending} className="gap-2">
+                <Check size={16} />
+                {isPending ? "Збереження..." : "Зберегти порядок"}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="outline" onClick={startReorder} className="gap-2">
+                <ArrowDownUp size={16} />
+                Впорядкувати
+              </Button>
+              <Button onClick={() => setShowAdd(true)} className="gap-2">
+                <Plus size={16} /> Додати категорію
+              </Button>
+            </>
           )}
         </div>
-        <div className="flex flex-wrap gap-2">
-          {(
-            [
-              { col: "title" as const, label: "Назва" },
-              { col: "res" as const, label: "Ресурси" },
-              { col: "createdAt" as const, label: "Дата" },
-            ] as const
-          ).map((s) => (
-            <Button
-              key={s.col}
-              size="sm"
-              variant={sortBy === s.col ? "secondary" : "outline"}
-              className="gap-1.5"
-              onClick={() => toggleSort(s.col)}
-            >
-              <ArrowUpDown size={12} />
-              {s.label}
-              {sortBy === s.col && <span className="text-[10px]">{sortDir === "asc" ? "↑" : "↓"}</span>}
-            </Button>
-          ))}
-        </div>
       </div>
+
+      {/* Search + sort (hidden in reorder mode) */}
+      {!reorderMode && (
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="relative flex-1">
+            <Search size={15} className="absolute top-1/2 left-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Input placeholder="Пошук категорій..." value={search} onChange={(e) => setSearch(e.target.value)} className="pr-9 pl-9" />
+            {search && (
+              <button
+                onClick={() => setSearch("")}
+                className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {(
+              [
+                { col: "title" as const, label: "Назва" },
+                { col: "res" as const, label: "Ресурси" },
+                { col: "createdAt" as const, label: "Дата" },
+              ] as const
+            ).map((s) => (
+              <Button
+                key={s.col}
+                size="sm"
+                variant={sortBy === s.col ? "secondary" : "outline"}
+                className="gap-1.5"
+                onClick={() => toggleSort(s.col)}
+              >
+                <ArrowUpDown size={12} />
+                {s.label}
+                {sortBy === s.col && <span className="text-[10px]">{sortDir === "asc" ? "↑" : "↓"}</span>}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {reorderMode && (
+        <div className="flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-[13px] text-blue-700 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-300">
+          <GripVertical size={14} />
+          Перетягніть рядки щоб змінити порядок відображення категорій
+        </div>
+      )}
 
       {/* Table */}
       <Card className="overflow-hidden rounded-2xl border p-0 shadow-sm">
         <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/40 hover:bg-muted/40">
-                <TableHead className="pl-5 text-[11px] font-bold tracking-wider text-muted-foreground uppercase">Категорія</TableHead>
-                <TableHead className="hidden text-[11px] font-bold tracking-wider text-muted-foreground uppercase md:table-cell">
-                  Послуги
-                </TableHead>
-                <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">Ресурси</TableHead>
-                <TableHead className="hidden text-[11px] font-bold tracking-wider text-muted-foreground uppercase sm:table-cell">
-                  Створено
-                </TableHead>
-                <TableHead className="w-[80px]" />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="py-5 px-5">
-                    <EmptyState variant={search ? "search" : "empty"} query={search} onResetSearch={() => setSearch("")} />
-                  </TableCell>
+          <DragDropProvider
+            onDragEnd={(event) => {
+              if (event.canceled || !isSortableOperation(event.operation)) return
+              const { source } = event.operation
+              if (!source) return
+              const from = source.initialIndex
+              const to = source.index
+              if (from === to) return
+              setCategories((prev) => arrayMove(prev, from, to))
+            }}
+          >
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/40 hover:bg-muted/40">
+                  {reorderMode && <TableHead className="w-8 pl-3" />}
+                  <TableHead className="pl-5 text-[11px] font-bold tracking-wider text-muted-foreground uppercase">Категорія</TableHead>
+                  <TableHead className="hidden text-[11px] font-bold tracking-wider text-muted-foreground uppercase md:table-cell">
+                    Послуги
+                  </TableHead>
+                  <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">Ресурси</TableHead>
+                  <TableHead className="hidden text-[11px] font-bold tracking-wider text-muted-foreground uppercase sm:table-cell">
+                    Створено
+                  </TableHead>
+                  <TableHead className="w-[80px]" />
                 </TableRow>
-              ) : (
-                filtered.map((cat) => {
-                  const Icon = ICON_MAP[cat.iconName] ?? ICON_MAP.Building2
-                  return (
-                    <TableRow
+              </TableHeader>
+              <TableBody>
+                {filtered.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={reorderMode ? 6 : 5} className="py-5 px-5">
+                      <EmptyState variant={search ? "search" : "empty"} query={search} onResetSearch={() => setSearch("")} />
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filtered.map((cat, index) => (
+                    <SortableCategoryRow
                       key={cat.id}
-                      className="group cursor-pointer border-b transition-colors last:border-0 hover:bg-muted/30"
-                      onClick={() => router.push(`/admin/categories/${cat.id}`)}
-                    >
-                      <TableCell className="py-3.5 pl-5">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" style={{ background: cat.bg }}>
-                            <Icon size={16} color={cat.accent} strokeWidth={1.8} />
-                          </div>
-                          <div className="min-w-0">
-                            <p className="text-[13.5px] leading-tight font-semibold text-foreground">{cat.title}</p>
-                            <p className="text-[11px] text-muted-foreground">{cat.titleEn}</p>
-                          </div>
-                        </div>
-                      </TableCell>
-
-                      <TableCell className="hidden py-3.5 md:table-cell">
-                        <div className="flex flex-wrap gap-1">
-                          {cat.services.slice(0, 2).map((s) => (
-                            <Badge key={s} variant="secondary" className="text-[11px]">
-                              {s}
-                            </Badge>
-                          ))}
-                          {cat.services.length > 2 && <span className="text-[11px] text-muted-foreground">+{cat.services.length - 2}</span>}
-                        </div>
-                      </TableCell>
-
-                      <TableCell className="py-3.5">
-                        <span
-                          className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-semibold"
-                          style={{ background: cat.bg, color: cat.accent }}
-                        >
-                          <Globe size={10} />
-                          {cat._count.resources}
-                        </span>
-                      </TableCell>
-
-                      <TableCell className="hidden py-3.5 sm:table-cell">
-                        <span className="text-[12px] text-muted-foreground">
-                          {new Date(cat.createdAt).toLocaleDateString("uk-UA", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                          })}
-                        </span>
-                      </TableCell>
-
-                      <TableCell className="py-3.5 pr-3" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center gap-1">
-                          <ChevronRight size={14} className="text-muted-foreground/40" />
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100">
-                                <MoreHorizontal size={16} />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-44">
-                              <DropdownMenuItem onClick={() => setEditItem(cat)}>
-                                <Pencil size={14} /> Редагувати
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem className="text-destructive" onClick={() => setDeleteItem(cat)}>
-                                <Trash2 size={14} /> Видалити
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })
-              )}
-            </TableBody>
-          </Table>
+                      cat={cat}
+                      index={index}
+                      reorderMode={reorderMode}
+                      onNavigate={() => router.push(`/admin/categories/${cat.id}`)}
+                      onEdit={() => setEditItem(cat)}
+                      onDelete={() => setDeleteItem(cat)}
+                    />
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </DragDropProvider>
           <Separator />
           <div className="px-5 py-3">
             <p className="text-[12px] text-muted-foreground">
               Показано <span className="font-semibold text-foreground">{filtered.length}</span> з{" "}
-              <span className="font-semibold text-foreground">{categories.length}</span> · Клікніть на рядок щоб керувати вмістом
+              <span className="font-semibold text-foreground">{categories.length}</span>
+              {!reorderMode && " · Клікніть на рядок щоб керувати вмістом"}
             </p>
           </div>
         </CardContent>
@@ -394,7 +523,6 @@ function CategoryFormDialog({
   onClose: () => void
 }) {
   const isEdit = !!category
-  // Зберігаємо оригінальне фото з БД — для rollback після успішного edit
   const originalPhoto = category?.photo ?? ""
   const [title, setTitle] = useState(category?.title ?? "")
   const [titleEn, setTitleEn] = useState(category?.titleEn ?? "")
@@ -410,7 +538,6 @@ function CategoryFormDialog({
   const SelectedIcon = ICON_MAP[iconName] ?? ICON_MAP.Building2
 
   async function handleClose() {
-    // Якщо завантажили новий файл але не зберегли — видаляємо його
     if (pendingUrl && pendingUrl !== originalPhoto) {
       await fetch("/api/upload", {
         method: "DELETE",
@@ -435,7 +562,6 @@ function CategoryFormDialog({
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean),
-      // Передаємо originalPhoto щоб handleEdit знав що видаляти після save
       originalPhoto,
     })
     setPendingUrl(null)

@@ -28,6 +28,18 @@ export async function inviteAdmin(email: string): Promise<Action<{ invite: Invit
 
   if (existingInvite) {
     const link = `${baseUrl}/auth/register/${existingInvite.token}`
+    let warning: string | undefined
+    try {
+      await sendInviteEmail({
+        to: trimmed,
+        url: link,
+        host: new URL(baseUrl).hostname,
+        invitedBy: user.name ?? user.email ?? undefined,
+      })
+    } catch (err) {
+      console.error("[inviteAdmin] помилка повторної відправки листа:", err)
+      warning = "Запрошення вже існує, але лист не надіслано. Скопіюй посилання вручну."
+    }
     return {
       ok: true,
       data: {
@@ -39,6 +51,7 @@ export async function inviteAdmin(email: string): Promise<Action<{ invite: Invit
           createdAt: formatDate(existingInvite.createdAt),
           link,
         },
+        warning,
       },
     }
   }
