@@ -1,3 +1,6 @@
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin"
+import { extractRouterConfig } from "uploadthing/server"
+import { ourFileRouter } from "@/app/api/uploadthing/core"
 import { Geist_Mono, Nunito_Sans, Public_Sans } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { TooltipProvider } from "@/components/ui/tooltip"
@@ -45,6 +48,7 @@ export default function RootLayout({ children }: Props) {
       className={cn("antialiased", fontMono.variable, "font-sans", publicSans.variable, nunito.variable)}
     >
       <body>
+        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
         <NuqsAdapter>
           <ThemeProvider>
             <TooltipProvider>

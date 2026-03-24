@@ -44,6 +44,7 @@ prisma/migrations/dev/
 # IDE
 .idea/
 .vscode/
+.claude/
 
 # OS
 Thumbs.db

@@ -4,7 +4,11 @@
       "Bash(find /c/Users/Yaroslav/Desktop/app -name *categor* -type f)",
       "Bash(xargs grep:*)",
       "Bash(npx tsc:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(firebase deploy:*)",
+      "Bash(curl -s https://docs.uploadthing.com/getting-started/appdir)",
+      "WebFetch(domain:docs.uploadthing.com)",
+      "Bash(grep -rn upload_ C:/Users/Yaroslav/Desktop/app/app/admin/categories/[id]/client-page.tsx)"
     ]
   }
 }

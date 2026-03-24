@@ -6,49 +6,39 @@ import { ImageIcon, X, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { UPLOAD_ALLOWED_TYPES, UPLOAD_MAX_SIZE, UploadFolder } from "@/constants/upload"
+import { useUploadThing } from "@/lib/uploadthing"
 
 interface Props {
   value: string
   onChange: (url: string) => void
   onPendingChange?: (pending: string | null) => void
-  folder?: UploadFolder
   label?: string
 }
 
-export default function ImageUpload({ value, onChange, onPendingChange, folder = "categories", label }: Props) {
+export default function ImageUpload({ value, onChange, onPendingChange, label }: Props) {
   const id = useId()
   const inputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const { startUpload } = useUploadThing("imageUploader", {
+    onClientUploadComplete: (res) => {
+      const url = res[0].ufsUrl
+      onChange(url)
+      onPendingChange?.(url)
+      setIsUploading(false)
+    },
+    onUploadError: (err) => {
+      setError(err.message ?? "Помилка завантаження")
+      setIsUploading(false)
+    },
+  })
+
   async function upload(file: File) {
     setError(null)
     setIsUploading(true)
-
-    const formData = new FormData()
-    formData.append("file", file)
-
-    try {
-      const res = await fetch(`/api/upload?folder=${folder}`, {
-        method: "POST",
-        body: formData,
-      })
-      const data = await res.json()
-
-      if (!res.ok) {
-        setError(data.error ?? "Помилка завантаження")
-        return
-      }
-
-      onChange(data.url)
-      onPendingChange?.(data.url)
-    } catch {
-      setError("Помилка завантаження")
-    } finally {
-      setIsUploading(false)
-    }
+    await startUpload([file])
   }
 
   // Просто очищаємо UI — файл з диску НЕ видаляємо тут
@@ -59,14 +49,6 @@ export default function ImageUpload({ value, onChange, onPendingChange, folder =
   }
 
   function handleFile(file: File) {
-    if (!UPLOAD_ALLOWED_TYPES.includes(file.type as never)) {
-      setError("Дозволено лише jpg, png, webp")
-      return
-    }
-    if (file.size > UPLOAD_MAX_SIZE) {
-      setError("Файл перевищує 2MB")
-      return
-    }
     upload(file)
   }
 

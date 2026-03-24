@@ -46,6 +46,7 @@ import EmptyState from "@/components/empty-state"
 
 type SortCol = "title" | "res" | "createdAt"
 
+
 function arrayMove<T>(arr: T[], from: number, to: number): T[] {
   const result = [...arr]
   const [moved] = result.splice(from, 1)
@@ -244,7 +245,7 @@ export default function AdminCategoriesClient({ categories: initial }: { categor
     try {
       created = await createCategory(data)
     } catch {
-      if (data.photo?.includes("/upload_")) {
+      if (data.photo) {
         await fetch("/api/upload", {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
@@ -273,7 +274,7 @@ export default function AdminCategoriesClient({ categories: initial }: { categor
         setEditItem(null)
         toast.success("Зміни збережено")
 
-        if (originalPhoto && originalPhoto !== updated.photo && originalPhoto.includes("/upload_")) {
+        if (originalPhoto && originalPhoto !== updated.photo) {
           await fetch("/api/upload", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
@@ -283,7 +284,7 @@ export default function AdminCategoriesClient({ categories: initial }: { categor
 
         router.refresh()
       } catch {
-        if (formData.photo?.includes("/upload_") && formData.photo !== editItem.photo) {
+        if (formData.photo && formData.photo !== editItem.photo) {
           await fetch("/api/upload", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },

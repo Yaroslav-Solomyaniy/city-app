@@ -4,6 +4,16 @@ const nextConfig = {
   allowedDevOrigins: ["192.168.88.46"],
   images: {
     qualities: [100, 90, 75],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.ufs.sh",
+      },
+      {
+        protocol: "https",
+        hostname: "utfs.io",
+      },
+    ],
   },
 }
 
