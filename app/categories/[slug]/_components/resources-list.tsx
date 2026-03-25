@@ -28,7 +28,7 @@ export default function ResourcesList({ resources, category }: Props) {
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[14px] leading-tight font-semibold text-foreground">{res.title}</p>
-              {res.description && <p className="mt-0.5 line-clamp-2 text-[13px] leading-relaxed text-muted-foreground">{res.description}</p>}
+              {res.description && <p className="mt-0.5 text-[13px] leading-relaxed text-muted-foreground">{res.description}</p>}
             </div>
             <div className="ml-auto flex shrink-0 flex-col items-end gap-2 pt-0.5">
               <span className="hidden text-[11px] whitespace-nowrap text-muted-foreground sm:block">{formatDate(res.createdAt)}</span>

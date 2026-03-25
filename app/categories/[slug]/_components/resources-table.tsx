@@ -47,7 +47,7 @@ export default function ResourcesTable({ resources, category }: Props) {
                     <div className="min-w-0">
                       <p className="text-[13px] font-semibold text-foreground">{res.title}</p>
                       {res.description && (
-                        <p className="mt-0.5 line-clamp-2 text-[11.5px] leading-relaxed text-muted-foreground md:hidden">
+                        <p className="mt-0.5 text-[11.5px] leading-relaxed text-muted-foreground md:hidden">
                           {res.description}
                         </p>
                       )}
