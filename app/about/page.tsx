@@ -1,5 +1,16 @@
 import React from "react"
+import { Metadata } from "next"
 import Link from "next/link"
+
+export const metadata: Metadata = {
+  title: "Про портал",
+  description: "Дізнайтесь більше про СітіЧЕ — вебпортал Черкаської міської громади, команду та місію проекту.",
+  openGraph: {
+    title: "Про портал | СітіЧЕ",
+    description: "Дізнайтесь більше про СітіЧЕ — вебпортал Черкаської міської громади.",
+    url: "/about",
+  },
+}
 import { CodeXml, Lightbulb, PencilRuler, SlidersHorizontal } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"

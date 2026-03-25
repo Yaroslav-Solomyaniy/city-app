@@ -1,7 +1,34 @@
 import { Suspense } from "react"
 import { notFound } from "next/navigation"
+import { Metadata } from "next"
 import { getCategoryBySlug, getCategoryBySlugFull } from "@/actions/category/get-category-by-slug"
 import SubCategoryPageClient from "./client-page"
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; subSlug: string }>
+}): Promise<Metadata> {
+  const { slug, subSlug } = await params
+  const category = await getCategoryBySlugFull(slug)
+  if (!category) return {}
+
+  const sub = category.subcategories.find((s) => s.slug === subSlug)
+  if (!sub) return {}
+
+  const title = sub.titleEn ? `${sub.title} — ${sub.titleEn}` : sub.title
+  const description = `Онлайн-ресурси підкатегорії «${sub.title}» категорії «${category.title}» Черкаської громади.`
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title: `${title} | СітіЧЕ`,
+      description,
+      url: `/categories/${slug}/${subSlug}`,
+    },
+  }
+}
 
 export default async function SubCategoryPage({
   params,

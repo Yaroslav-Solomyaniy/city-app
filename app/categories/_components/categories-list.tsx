@@ -20,7 +20,7 @@ export default function CategoriesList({ categories }: Props) {
           <Link
             key={cat.id}
             href={`/categories/${cat.slug}`}
-            className="group flex items-center gap-4 rounded-2xl border bg-card px-5 py-4 shadow-sm transition-all duration-200 hover:translate-x-1 hover:shadow-md"
+            className="group flex items-center gap-3 rounded-2xl border bg-card px-4 py-3 shadow-sm transition-all duration-200 hover:translate-x-1 hover:shadow-md"
           >
             <div className="w-1 shrink-0 self-stretch rounded-full" style={{ background: cat.accent }} />
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl" style={{ background: cat.bg }}>

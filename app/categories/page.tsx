@@ -1,7 +1,18 @@
 import { Suspense } from "react"
+import { Metadata } from "next"
 import { getCategories } from "@/actions/category/get-categories"
 import CategoriesClient from "@/app/categories/client-page"
 import { getResourcesCount } from "@/actions/resource/get-resources-count"
+
+export const metadata: Metadata = {
+  title: "Категорії послуг",
+  description: "Усі категорії міських послуг Черкас: комунальні служби, медицина, освіта, транспорт, соціальний захист та інші онлайн-ресурси громади.",
+  openGraph: {
+    title: "Категорії послуг | СітіЧЕ",
+    description: "Усі категорії міських послуг Черкас в одному місці.",
+    url: "/categories",
+  },
+}
 
 export default async function CategoriesPage() {
   const categories = await getCategories()

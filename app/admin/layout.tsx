@@ -1,6 +1,11 @@
 export const dynamic = "force-dynamic"
 
 import React from "react"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
 import {
   SidebarProvider,
   SidebarTrigger,

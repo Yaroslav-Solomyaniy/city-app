@@ -6,8 +6,13 @@ import ResourcesClient from "@/app/resources/client-page"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "СітіЧЕ — список доступних ресурсів",
-  description: "Офіційний довідник ресурсів Черкаської громади",
+  title: "Перелік ресурсів",
+  description: "Повний перелік онлайн-ресурсів Черкаської громади: електронні послуги, портали, довідники та інструменти для вирішення побутових питань.",
+  openGraph: {
+    title: "Перелік ресурсів | СітіЧЕ",
+    description: "Повний перелік онлайн-ресурсів Черкаської громади.",
+    url: "/resources",
+  },
 }
 
 interface Props {

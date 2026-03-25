@@ -57,7 +57,7 @@ export default function CategoriesClient({ categories, resourcesCount }: Props) 
   return (
     <div className="relative min-h-screen bg-background">
       <div className="mx-auto max-w-7xl px-4 pt-10 pb-4 sm:px-6">
-<h1 className="mb-2 text-[clamp(28px,4vw,48px)] leading-tight font-bold text-foreground">Категорії послуг</h1>
+        <h1 className="mb-2 text-[clamp(28px,4vw,48px)] leading-tight font-bold text-foreground">Категорії послуг</h1>
         <p className="mb-4 text-[15px] text-muted-foreground">
           Знайдіть потрібні сервіси, організації та корисні посилання для вирішення щоденних питань
         </p>

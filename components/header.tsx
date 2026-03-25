@@ -3,13 +3,14 @@
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, Search, X } from "lucide-react"
+import { ExternalLink, Facebook, Globe, Landmark, Menu, Search, X } from "lucide-react"
 
 import { NAV_LINKS } from "@/constants/nav"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import GlobalSearch from "@/components/global-search"
+import Image from "next/image"
 
 export default function Header() {
   const pathname = usePathname()
@@ -86,7 +87,7 @@ export default function Header() {
               <Search className="size-3.5" />
             </Button>
 
-            <MobileMenu isActive={isActive} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} closeMenu={closeMenu} onSearch={() => setSearchOpen(true)} />
+            <MobileMenu isActive={isActive} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} closeMenu={closeMenu} />
           </div>
 
           <img src="/kozak.png" alt="Козак" className="block h-8 object-contain" />
@@ -99,7 +100,7 @@ export default function Header() {
 
   // ── Simple sticky (всі інші сторінки) ─────────────────────
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur-md">
+    <header className="sticky -top-px z-40 border-b bg-background pt-px backdrop-blur-md">
       <div className="mx-auto flex h-15 max-w-7xl items-center gap-3 px-4 sm:px-6">
         <Link href="/" className="group flex shrink-0 items-center gap-3">
           <img src="/gerb.png" alt="Герб" className="hidden h-11 lg:block" />
@@ -145,7 +146,7 @@ export default function Header() {
           <Search className="size-3.5" />
         </Button>
 
-        <MobileMenu isActive={isActive} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} closeMenu={closeMenu} onSearch={() => setSearchOpen(true)} />
+        <MobileMenu isActive={isActive} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} closeMenu={closeMenu} />
       </div>
 
       <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
@@ -160,13 +161,11 @@ function MobileMenu({
   mobileOpen,
   setMobileOpen,
   closeMenu,
-  onSearch,
 }: {
   isActive: (href: string) => boolean
   mobileOpen: boolean
   setMobileOpen: (v: boolean) => void
   closeMenu: () => void
-  onSearch: () => void
 }) {
   return (
     <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
@@ -175,20 +174,18 @@ function MobileMenu({
           {mobileOpen ? <X className="size-4" /> : <Menu className="size-4" />}
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-72" onOpenAutoFocus={(e) => e.preventDefault()}>
-        <SheetHeader>
-          <SheetTitle className="text-left text-sm">СітіЧе — Громадський портал Черкас</SheetTitle>
+      <SheetContent side="right" className="flex w-72 flex-col p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
+        {/* Top — лого + заголовок */}
+        <SheetHeader className="flex flex-col items-center gap-2 border-b px-4 pt-8 pb-5">
+          <Image src="/1.png" alt="СітіЧЕ" width={200} height={100} priority />
+          <div className="mt-5 text-center">
+            <SheetTitle className="text-[28px] leading-tight font-bold">СітіЧЕ</SheetTitle>
+            <p className="text-[14px] text-muted-foreground">Довідник електронних сервісів громади</p>
+          </div>
         </SheetHeader>
-        <div className="px-4 pb-2">
-          <button
-            onClick={() => { setMobileOpen(false); onSearch() }}
-            className="flex w-full items-center gap-2 rounded-xl border bg-muted/40 px-3 py-2 text-[13px] text-muted-foreground"
-          >
-            <Search size={14} />
-            <span>Пошук по порталу...</span>
-          </button>
-        </div>
-        <nav className="flex flex-col gap-1 px-4">
+
+        {/* Навігація */}
+        <nav className="flex flex-col gap-0.5 px-3 py-3">
           {NAV_LINKS.map(({ href, label }) => (
             <Link
               key={href}
@@ -203,9 +200,50 @@ function MobileMenu({
             </Link>
           ))}
         </nav>
-        <p className="mt-auto border-t px-4 pt-3 text-[10.5px] leading-relaxed text-muted-foreground">
-          КП «Інститут розвитку міста та цифрової трансформації» Черкаської міської ради
-        </p>
+
+        {/* Footer */}
+        <div className="mt-auto flex flex-col gap-3 border-t px-4 py-4">
+          <p className="text-center text-[12px] leading-relaxed text-muted-foreground">
+            КП «Інститут розвитку міста та цифрової трансформації» Черкаської міської ради
+          </p>
+
+          <div className="flex items-center justify-center gap-3">
+            <a
+              href="https://kpcifra.ck.ua"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              title="Наш сайт"
+            >
+              <Globe size={15} />
+            </a>
+            <a
+              href="https://www.facebook.com/KPCifra"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              title="Facebook"
+            >
+              <Facebook size={15} />
+            </a>
+            <a
+              href="https://cherkasy-rada.gov.ua"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              title="Facebook"
+            >
+              <Landmark size={15} />
+            </a>
+          </div>
+          <p className="text-center text-[12px] leading-relaxed text-muted-foreground">За підтримки черкаської міської ради</p>
+
+          <p className="на mt-5 flex items-center justify-center gap-3 text-center text-[12px] leading-relaxed text-muted-foreground">
+            <img src="https://flagcdn.com/w20/ua.png" alt="UA" className={"rounded"} />
+            Слава Україні! — Героям слава!
+            <img src="https://flagcdn.com/w20/ua.png" alt="UA" className={"rounded"} />
+          </p>
+        </div>
       </SheetContent>
     </Sheet>
   )

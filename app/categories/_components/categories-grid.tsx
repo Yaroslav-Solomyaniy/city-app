@@ -31,9 +31,9 @@ export default function CategoriesGrid({ categories }: Props) {
               </div>
             )}
 
-            <div className="flex flex-1 flex-col p-4">
+            <div className="flex flex-1 flex-col p-3">
               {/* Іконка + назва */}
-              <div className="mb-2.5 flex items-center justify-between gap-3">
+              <div className="mb-2 flex items-center justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-2.5">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" style={{ background: cat.bg }}>
                     <Icon size={17} color={cat.accent} strokeWidth={1.8} />
@@ -46,7 +46,7 @@ export default function CategoriesGrid({ categories }: Props) {
               </div>
 
               {/* Список послуг */}
-              <ul className="mb-3 mt-3 flex flex-1 list-none flex-col gap-1 p-0">
+              <ul className="my-1.5 flex flex-1 list-none flex-col gap-0.5 p-0">
                 {cat.services.map((s) => (
                   <li key={s} className="flex items-center gap-2 text-[13px] text-muted-foreground">
                     <span className="h-1 w-1 shrink-0 rounded-full opacity-50" style={{ background: cat.accent }} />

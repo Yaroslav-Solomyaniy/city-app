@@ -5,7 +5,7 @@ import Link from "next/link"
 import panorama from "@/public/new_pano.jpeg"
 import iphone from "@/public/iphone.png"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Clock, Database, LayoutGrid } from "lucide-react"
+import { ArrowRight, Clock, Code2, Database, LayoutGrid } from "lucide-react"
 import { TypingAnimation } from "@/components/ui/typing-animation"
 
 const STATS = [
@@ -19,7 +19,7 @@ export default function Hero() {
     <header className="relative flex min-h-screen flex-col overflow-hidden">
       {/* ── Full-bleed panorama background ── */}
       <div className="absolute inset-0 z-0">
-        <Image src={panorama} alt="Панорама Черкас" fill priority quality={90} sizes="100vw" className="object-cover object-center" />
+        <Image src={panorama} alt="Панорама Черкас" fill priority quality={100} sizes="(max-width: 640px) 400vw, (max-width: 1280px) 200vw, 100vw" className="object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20" />
       </div>
 
@@ -89,20 +89,34 @@ export default function Hero() {
           </div>
 
           {/* CTA */}
-          <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg" className="rounded-full px-7 text-[14px] sm:px-9 sm:text-[15px]">
-              <Link href="/categories">
-                Переглянути сервіси
-                <ArrowRight className="ml-2 size-4" />
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-nowrap sm:items-center">
+            <Button asChild size="lg" className="w-full rounded-full px-6 text-[14px] sm:w-auto">
+              <Link href="/categories" className="flex items-center gap-2">
+                До категорій
+                <LayoutGrid className="size-4" />
               </Link>
             </Button>
             <Button
               asChild
               size="lg"
               variant="outline"
-              className="rounded-full border-slate-300/70 bg-white/60 px-7 text-[14px] backdrop-blur-sm hover:bg-white sm:px-9 sm:text-[15px]"
+              className="w-full rounded-full border-slate-300/70 bg-white/30 px-6 text-[14px] backdrop-blur-sm hover:bg-slate-100 hover:text-slate-900 sm:w-auto"
             >
-              <Link href="/about">Про проєкт</Link>
+              <Link href="/resources" className="flex items-center gap-2">
+                Всі ресурси
+                <Database className="size-3.5" />
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="w-full rounded-full border-slate-300/70 bg-transparent px-6 text-[14px] text-slate-700 hover:bg-white/60 hover:text-slate-900 sm:w-auto"
+            >
+              <Link href="/about" className="flex items-center gap-2">
+                Розробники
+                <Code2 className="size-3.5" />
+              </Link>
             </Button>
           </div>
 

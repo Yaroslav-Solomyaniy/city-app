@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import React from "react"
 import { Metadata, Viewport } from "next"
 import ConditionalHeader from "@/components/conditional-header"
+import ScrollToTop from "@/components/scroll-to-top"
 import "./globals.css"
 import AdminPreviewBar from "@/components/admin-preview-bar"
 import { Toaster } from "sonner"
@@ -25,9 +26,27 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://city-che.ck.ua"
+
 export const metadata: Metadata = {
-  title: "CityChe — єдине вікно для взаємодії з Черкасами",
-  description: "Офіційний вебпортал Черкаської міської громади.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "СітіЧЕ — єдине вікно для взаємодії з Черкасами",
+    template: "%s | СітіЧЕ",
+  },
+  description: "Офіційний вебпортал Черкаської міської громади. Знайдіть усі міські послуги, ресурси та онлайн-можливості Черкас в одному місці.",
+  keywords: ["Черкаси", "міські послуги", "онлайн-сервіси", "Черкаська громада", "електронні послуги", "СітіЧЕ"],
+  openGraph: {
+    type: "website",
+    locale: "uk_UA",
+    siteName: "СітіЧЕ",
+    images: [{ url: "/panorama.jpg", width: 1200, height: 630, alt: "СітіЧЕ — вебпортал Черкаської громади" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@cityche",
+  },
+  robots: { index: true, follow: true },
 }
 
 export const viewport: Viewport = {
@@ -52,6 +71,7 @@ export default function RootLayout({ children }: Props) {
         <NuqsAdapter>
           <ThemeProvider>
             <TooltipProvider>
+              <ScrollToTop />
               <ConditionalHeader />
               <Toaster position={"top-center"} />
               {children}
