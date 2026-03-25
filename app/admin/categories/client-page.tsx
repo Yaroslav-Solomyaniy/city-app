@@ -670,12 +670,15 @@ function CategoryFormDialog({
                 <Palette size={10} /> Акцент
               </Label>
               <div className="flex gap-2">
-                <input
-                  type="color"
-                  value={accent}
-                  onChange={(e) => setAccent(e.target.value)}
-                  className="h-10 w-9 cursor-pointer rounded-md border bg-transparent"
-                />
+                <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md border">
+                  <div className="h-full w-full" style={{ background: accent }} />
+                  <input
+                    type="color"
+                    value={accent}
+                    onChange={(e) => setAccent(e.target.value)}
+                    className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                  />
+                </div>
                 <Input value={accent} onChange={(e) => setAccent(e.target.value)} className="flex-1 font-mono text-xs" />
               </div>
             </div>
@@ -684,12 +687,15 @@ function CategoryFormDialog({
                 <Palette size={10} /> Фон іконки
               </Label>
               <div className="flex gap-2">
-                <input
-                  type="color"
-                  value={bg}
-                  onChange={(e) => setBg(e.target.value)}
-                  className="h-10 w-9 cursor-pointer rounded-md border bg-transparent"
-                />
+                <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md border">
+                  <div className="h-full w-full" style={{ background: bg }} />
+                  <input
+                    type="color"
+                    value={bg}
+                    onChange={(e) => setBg(e.target.value)}
+                    className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                  />
+                </div>
                 <Input value={bg} onChange={(e) => setBg(e.target.value)} className="flex-1 font-mono text-xs" />
               </div>
             </div>

@@ -2,36 +2,23 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import { ExternalLink, FileText, FolderOpen, Layers, Search, X } from "lucide-react"
+import { ExternalLink, FolderOpen, Layers, Search, X } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
 
 import { globalSearch, SearchResultItem } from "@/actions/search/global-search"
 import { ICON_MAP } from "@/constants/icon-map"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
-
-// ── Types ─────────────────────────────────────────────────────
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 
 interface Props {
   open: boolean
   onClose: () => void
 }
 
-// ── Section label map ─────────────────────────────────────────
-
-const SECTION_LABELS: Record<string, string> = {
-  pages: "Сторінки",
-  categories: "Категорії",
-  subcategories: "Підкатегорії",
-  resources: "Ресурси",
+const TYPE_ICONS: Record<string, React.ElementType> = {
+  category: FolderOpen,
+  subcategory: Layers,
 }
-
-const SECTION_ICONS: Record<string, React.ElementType> = {
-  pages: FileText,
-  categories: FolderOpen,
-  subcategories: Layers,
-  resources: ExternalLink,
-}
-
-// ── Result item component ─────────────────────────────────────
 
 function ResultItem({
   item,
@@ -49,14 +36,6 @@ function ResultItem({
   }, [isActive])
 
   const iconNode = (() => {
-    if (item.type === "page") {
-      const PageIcon = SECTION_ICONS.pages
-      return (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted">
-          <PageIcon size={14} className="text-muted-foreground" />
-        </div>
-      )
-    }
     if (item.iconName) {
       const Icon = ICON_MAP[item.iconName] ?? ICON_MAP.Building2
       return (
@@ -68,9 +47,10 @@ function ResultItem({
         </div>
       )
     }
+    const FallbackIcon = TYPE_ICONS[item.type] ?? Search
     return (
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted">
-        <Search size={14} className="text-muted-foreground" />
+        <FallbackIcon size={14} className="text-muted-foreground" />
       </div>
     )
   })()
@@ -95,24 +75,15 @@ function ResultItem({
   )
 }
 
-// ── Main component ────────────────────────────────────────────
-
 export default function GlobalSearch({ open, onClose }: Props) {
   const router = useRouter()
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState<{
-    pages: SearchResultItem[]
-    categories: SearchResultItem[]
-    subcategories: SearchResultItem[]
-    resources: SearchResultItem[]
-    total: number
-  } | null>(null)
+  const [results, setResults] = useState<{ items: SearchResultItem[]; total: number } | null>(null)
   const [loading, setLoading] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Reset on open
   useEffect(() => {
     if (open) {
       setQuery("")
@@ -122,15 +93,20 @@ export default function GlobalSearch({ open, onClose }: Props) {
     }
   }, [open])
 
-  // Debounced search
   const handleChange = useCallback((value: string) => {
     setQuery(value)
     setActiveIndex(0)
 
     if (debounceRef.current) clearTimeout(debounceRef.current)
 
+    if (!value.trim()) {
+      setResults(null)
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
     debounceRef.current = setTimeout(async () => {
-      setLoading(true)
       try {
         const res = await globalSearch(value)
         setResults(res)
@@ -140,22 +116,12 @@ export default function GlobalSearch({ open, onClose }: Props) {
     }, 300)
   }, [])
 
-  // Flat list of all results for keyboard navigation
-  const allItems: SearchResultItem[] = results
-    ? [
-        ...results.pages,
-        ...results.categories,
-        ...results.subcategories,
-        ...results.resources,
-      ]
-    : []
-
   const handleSelect = useCallback(
     (item: SearchResultItem) => {
-      onClose()
       if (item.external) {
         window.open(item.href, "_blank", "noopener,noreferrer")
       } else {
+        onClose()
         router.push(item.href)
       }
     },
@@ -163,50 +129,40 @@ export default function GlobalSearch({ open, onClose }: Props) {
   )
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    const items = results?.items ?? []
     if (e.key === "ArrowDown") {
       e.preventDefault()
-      setActiveIndex((i) => Math.min(i + 1, allItems.length - 1))
+      setActiveIndex((i) => Math.min(i + 1, items.length - 1))
     } else if (e.key === "ArrowUp") {
       e.preventDefault()
       setActiveIndex((i) => Math.max(i - 1, 0))
-    } else if (e.key === "Enter" && allItems[activeIndex]) {
-      handleSelect(allItems[activeIndex])
+    } else if (e.key === "Enter") {
+      e.preventDefault()
+      const target = items[activeIndex] ?? items[0]
+      if (target) handleSelect(target)
     } else if (e.key === "Escape") {
       onClose()
     }
   }
 
-  // Sections to render
-  const sections = results
-    ? (["pages", "categories", "subcategories", "resources"] as const).filter(
-        (key) => results[key].length > 0
-      )
-    : []
-
-  // Calculate offset per section for keyboard nav index
-  const sectionOffsets: Record<string, number> = {}
-  if (results) {
-    let offset = 0
-    for (const key of ["pages", "categories", "subcategories", "resources"] as const) {
-      sectionOffsets[key] = offset
-      offset += results[key].length
-    }
-  }
+  const items = results?.items ?? []
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
-        className="max-h-[80vh] overflow-hidden p-0 sm:max-w-xl"
+        className="flex max-h-[85vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl"
+        showCloseButton={false}
         onKeyDown={handleKeyDown}
       >
+        <DialogTitle className="sr-only">Пошук</DialogTitle>
         {/* Input */}
-        <div className="flex items-center gap-2 border-b px-4 py-3">
+        <div className="flex shrink-0 items-center gap-2 border-b px-4 py-3">
           <Search size={16} className="shrink-0 text-muted-foreground" />
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => handleChange(e.target.value)}
-            placeholder="Пошук по всьому сайту..."
+            placeholder="Пошук сервісів та категорій..."
             className="flex-1 bg-transparent text-[14px] outline-none placeholder:text-muted-foreground"
           />
           {query && (
@@ -217,16 +173,21 @@ export default function GlobalSearch({ open, onClose }: Props) {
               <X size={14} />
             </button>
           )}
-          <kbd className="hidden shrink-0 rounded-md border bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground sm:block">
-            Esc
-          </kbd>
         </div>
 
         {/* Results */}
-        <div className="overflow-y-auto px-2 py-2" style={{ maxHeight: "calc(80vh - 56px)" }}>
+        <div className="h-[260px] overflow-y-auto px-2 py-2">
           {loading && (
-            <div className="flex items-center justify-center py-8">
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            <div className="flex flex-col gap-1 py-1">
+              {[1, 2, 3, 4].map((n) => (
+                <div key={n} className="flex items-center gap-3 rounded-xl px-3 py-2.5">
+                  <div className="h-8 w-8 shrink-0 animate-pulse rounded-lg bg-muted" />
+                  <div className="flex flex-1 flex-col gap-1.5">
+                    <div className="h-3 w-2/5 animate-pulse rounded-md bg-muted" style={{ animationDelay: `${n * 60}ms` }} />
+                    <div className="h-2.5 w-3/5 animate-pulse rounded-md bg-muted/70" style={{ animationDelay: `${n * 60 + 30}ms` }} />
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 
@@ -236,42 +197,31 @@ export default function GlobalSearch({ open, onClose }: Props) {
             </div>
           )}
 
-          {!loading &&
-            sections.map((key) => {
-              const SectionIcon = SECTION_ICONS[key]
-              const items = results![key]
-              const offset = sectionOffsets[key]
-              return (
-                <div key={key} className="mb-2">
-                  <div className="mb-1 flex items-center gap-1.5 px-3 py-1">
-                    <SectionIcon size={11} className="text-muted-foreground" />
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                      {SECTION_LABELS[key]}
-                    </span>
-                  </div>
-                  {items.map((item, i) => (
-                    <ResultItem
-                      key={item.id}
-                      item={item}
-                      isActive={activeIndex === offset + i}
-                      onSelect={handleSelect}
-                    />
-                  ))}
-                </div>
-              )
-            })}
+          {!loading && items.map((item, i) => (
+            <ResultItem
+              key={item.id}
+              item={item}
+              isActive={activeIndex === i}
+              onSelect={handleSelect}
+            />
+          ))}
 
           {!loading && !results && (
             <div className="py-10 text-center">
               <p className="text-[13px] text-muted-foreground">Почніть вводити запит...</p>
             </div>
           )}
+        </div>
 
-          {!loading && results && results.total > 0 && (
-            <p className="mt-1 px-3 pb-1 text-[11px] text-muted-foreground">
-              Знайдено {results.total} результатів
-            </p>
-          )}
+        {/* Footer */}
+        <div className="flex shrink-0 items-center justify-between border-t px-4 py-2.5">
+          <p className="text-[11px] text-muted-foreground">
+            {results && results.total > 0 ? `Знайдено ${results.total} результатів` : "Введіть запит для пошуку"}
+          </p>
+          <Button variant="ghost" size="sm" onClick={onClose} className="gap-1.5 text-[11px]">
+            <X size={11} />
+            Закрити
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

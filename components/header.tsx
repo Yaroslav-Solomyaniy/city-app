@@ -26,17 +26,6 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll)
   }, [isHome])
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault()
-        setSearchOpen(true)
-      }
-    }
-    window.addEventListener("keydown", onKey)
-    return () => window.removeEventListener("keydown", onKey)
-  }, [])
-
   const isActive = (href: string) => pathname === href || (href !== "/" && pathname.startsWith(href))
 
   const closeMenu = () => setMobileOpen(false)
@@ -84,14 +73,14 @@ export default function Header() {
             <div className="flex-1 md:hidden" />
             <div className="hidden h-7 w-px shrink-0 bg-border/60 xl:block" />
 
-            <button
+            <Button
+              variant="outline"
               onClick={() => setSearchOpen(true)}
-              className="hidden items-center gap-2 rounded-full border border-border/50 bg-muted/40 px-3 py-1.5 text-[12.5px] text-muted-foreground transition-colors hover:bg-muted md:flex"
+              className="hidden w-36 justify-start lg:w-56 gap-2 rounded-full border-border/50 bg-muted/40 text-muted-foreground hover:bg-muted md:flex"
             >
               <Search size={13} />
-              <span>Пошук</span>
-              <kbd className="ml-1 rounded border bg-background px-1 py-0.5 text-[10px] font-medium">⌃K</kbd>
-            </button>
+              <span className="flex-1 text-left text-[12.5px]">Пошук...</span>
+            </Button>
 
             <Button variant="ghost" size="icon-sm" className="rounded-xl md:hidden" onClick={() => setSearchOpen(true)}>
               <Search className="size-3.5" />
@@ -143,16 +132,14 @@ export default function Header() {
 
         <div className="flex-1 md:hidden" />
 
-        <button
+        <Button
+          variant="outline"
           onClick={() => setSearchOpen(true)}
-          className="hidden items-center gap-2 rounded-full border bg-muted/40 px-3 py-1.5 text-[12.5px] text-muted-foreground transition-colors hover:bg-muted md:flex"
+          className="hidden w-36 justify-start lg:w-56 gap-2 rounded-full text-muted-foreground hover:bg-muted md:flex"
         >
           <Search size={13} />
-          <span>Пошук</span>
-          <kbd className="ml-1 rounded border bg-background px-1 py-0.5 text-[10px] font-medium">⌃K</kbd>
-        </button>
-
-        <img src="/kozak.png" alt="Козак" className="w-8 object-contain" />
+          <span className="flex-1 text-left text-[12.5px]">Пошук...</span>
+        </Button>
 
         <Button variant="ghost" size="icon-sm" className="rounded-xl md:hidden" onClick={() => setSearchOpen(true)}>
           <Search className="size-3.5" />
@@ -217,7 +204,7 @@ function MobileMenu({
           ))}
         </nav>
         <p className="mt-auto border-t px-4 pt-3 text-[10.5px] leading-relaxed text-muted-foreground">
-          КП «Інститут розвитку міста» Черкаської міської ради
+          КП «Інститут розвитку міста та цифрової трансформації» Черкаської міської ради
         </p>
       </SheetContent>
     </Sheet>

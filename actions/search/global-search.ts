@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma"
 
 export type SearchResultItem = {
   id: string
-  type: "page" | "category" | "subcategory" | "resource"
+  type: "category" | "subcategory" | "resource"
   title: string
   description?: string
   href: string
@@ -15,29 +15,18 @@ export type SearchResultItem = {
 }
 
 export type GlobalSearchResults = {
-  pages: SearchResultItem[]
-  categories: SearchResultItem[]
-  subcategories: SearchResultItem[]
-  resources: SearchResultItem[]
+  items: SearchResultItem[]
   total: number
 }
-
-const STATIC_PAGES: SearchResultItem[] = [
-  { id: "home", type: "page", title: "Головна", description: "Головна сторінка порталу", href: "/" },
-  { id: "categories", type: "page", title: "Категорії послуг", description: "Перелік всіх категорій", href: "/categories" },
-  { id: "resources", type: "page", title: "Ресурси", description: "Всі доступні ресурси порталу", href: "/resources" },
-  { id: "about", type: "page", title: "Про портал", description: "Інформація про СітіЧЕ та зворотний зв'язок", href: "/about" },
-]
 
 export async function globalSearch(query: string): Promise<GlobalSearchResults> {
   const q = query.trim()
 
   if (!q) {
-    return { pages: STATIC_PAGES, categories: [], subcategories: [], resources: [], total: STATIC_PAGES.length }
+    return { items: [], total: 0 }
   }
 
   const mode = "insensitive" as const
-  const lower = q.toLowerCase()
 
   const [categories, subcategories, resources] = await Promise.all([
     prisma.category.findMany({
@@ -83,12 +72,6 @@ export async function globalSearch(query: string): Promise<GlobalSearchResults> 
     }),
   ])
 
-  const pages = STATIC_PAGES.filter(
-    (p) =>
-      p.title.toLowerCase().includes(lower) ||
-      (p.description ?? "").toLowerCase().includes(lower)
-  )
-
   const mappedCategories: SearchResultItem[] = categories.map((c) => ({
     id: c.id,
     type: "category",
@@ -123,13 +106,7 @@ export async function globalSearch(query: string): Promise<GlobalSearchResults> 
     iconName: r.icon,
   }))
 
-  const total = pages.length + mappedCategories.length + mappedSubcategories.length + mappedResources.length
+  const items = [...mappedCategories, ...mappedSubcategories, ...mappedResources]
 
-  return {
-    pages,
-    categories: mappedCategories,
-    subcategories: mappedSubcategories,
-    resources: mappedResources,
-    total,
-  }
+  return { items, total: items.length }
 }
