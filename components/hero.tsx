@@ -5,7 +5,7 @@ import Link from "next/link"
 import panorama from "@/public/new_pano.jpeg"
 import iphone from "@/public/iphone.png"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Clock, Code2, Database, LayoutGrid } from "lucide-react"
+import {  Clock, Code2, Database, LayoutGrid } from "lucide-react"
 import { TypingAnimation } from "@/components/ui/typing-animation"
 
 const STATS = [
@@ -138,7 +138,7 @@ export default function Hero() {
         {/* hidden on mobile, visible tablet+ */}
         <div className="hidden w-full items-center justify-center self-center md:flex">
           <div className="relative w-[200px] drop-shadow-2xl lg:w-[280px] xl:w-[340px]">
-            <Image src={iphone} alt="СітіЧЕ на iPhone" width={380} height={780} className="w-full object-contain" priority />
+            <Image src={iphone} alt="СітіЧЕ на iPhone" width={380} height={780} quality={100} sizes="(max-width: 1024px) 200px, (max-width: 1280px) 280px, 340px" className="w-full object-contain" priority />
           </div>
         </div>
       </div>

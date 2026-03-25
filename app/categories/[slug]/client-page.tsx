@@ -124,6 +124,11 @@ export default function CategoryPageClient({ category, allCategory }: Props) {
             className="absolute inset-0"
             style={{ background: `linear-gradient(135deg, ${category.accent}cc 0%, ${category.accent}44 50%, transparent 95%)` }}
           />
+          {/* Mobile: насиченіший оверлей */}
+          <div
+            className="absolute inset-0 lg:hidden"
+            style={{ background: `linear-gradient(135deg, ${category.accent}dd 0%, ${category.accent}18 48%, ${category.accent}aa 100%)` }}
+          />
           <div className="absolute inset-0 bg-linear-to-b from-transparent to-black/20" />
 
           <div className="relative">

@@ -1,0 +1,46 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_APP_URL: https://city-che.ck.ua
+    container_name: cityche_app
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - cityche_network
+
+  postgres:
+    image: postgres:16
+    container_name: cityche_postgres
+    restart: unless-stopped
+    ports:
+      - "16743:5432"
+    environment:
+      POSTGRES_USER: city
+      POSTGRES_PASSWORD: zR8mK3vPqT5sL1dX9
+      POSTGRES_DB: citydb
+    volumes:
+      - cityche_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U city -d citydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cityche_network
+
+networks:
+  cityche_network:
+    driver: bridge
+
+volumes:
+  cityche_pgdata:
+    external: true
