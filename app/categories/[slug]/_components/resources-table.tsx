@@ -15,25 +15,16 @@ export default function ResourcesTable({ resources, category }: Props) {
       <table className="w-full border-collapse">
         <thead>
           <tr className="border-b bg-muted/40">
-            <th
-              className="py-3 pr-4 pl-5 text-left text-[11px] font-bold tracking-wider text-muted-foreground uppercase"
-              style={{ width: "30%" }}
-            >
+            <th className="py-3 pr-4 pl-5 text-left text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
               Ресурс
             </th>
-            <th
-              className="hidden px-4 py-3 text-left text-[11px] font-bold tracking-wider text-muted-foreground uppercase md:table-cell"
-              style={{ width: "55%" }}
-            >
+            <th className="hidden px-4 py-3 text-left text-[11px] font-bold tracking-wider text-muted-foreground uppercase md:table-cell">
               Опис
             </th>
-            <th
-              className="hidden px-4 py-3 text-left text-[11px] font-bold tracking-wider text-muted-foreground uppercase sm:table-cell"
-              style={{ width: "120px" }}
-            >
+            <th className="hidden w-[110px] px-4 py-3 text-left text-[11px] font-bold tracking-wider text-muted-foreground uppercase sm:table-cell">
               Додано
             </th>
-            <th style={{ width: "40px" }} />
+            <th className="w-10" />
           </tr>
         </thead>
         <tbody>
@@ -46,20 +37,30 @@ export default function ResourcesTable({ resources, category }: Props) {
                 onClick={() => window.open(res.url, "_blank")}
               >
                 <td className="py-3.5 pr-4 pl-5">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg" style={{ background: category.bg }}>
+                  <div className="flex min-w-0 items-start gap-3">
+                    <div
+                      className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+                      style={{ background: category.bg }}
+                    >
                       <Icon size={14} color={category.accent} strokeWidth={1.8} />
                     </div>
-                    <p className="text-[13px] font-semibold text-foreground">{res.title}</p>
+                    <div className="min-w-0">
+                      <p className="text-[13px] font-semibold text-foreground">{res.title}</p>
+                      {res.description && (
+                        <p className="mt-0.5 line-clamp-2 text-[11.5px] leading-relaxed text-muted-foreground md:hidden">
+                          {res.description}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </td>
                 <td className="hidden px-4 py-3.5 align-top md:table-cell">
                   <p className="text-[12.5px] leading-relaxed text-muted-foreground">{res.description}</p>
                 </td>
                 <td className="hidden px-4 py-3.5 align-top sm:table-cell">
-                  <span className="text-[12px] whitespace-nowrap text-muted-foreground">{formatDate(res.createdAt)}</span>
+                  <span className="whitespace-nowrap text-[12px] text-muted-foreground">{formatDate(res.createdAt)}</span>
                 </td>
-                <td className="py-3.5 pr-4 text-right align-top">
+                <td className="py-3.5 pr-4 align-top text-right">
                   <ExternalLink size={14} className="ml-auto text-muted-foreground" />
                 </td>
               </tr>
