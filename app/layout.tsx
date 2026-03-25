@@ -9,7 +9,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 import React from "react"
 import { Metadata, Viewport } from "next"
-import ConditionalHeader from "@/components/conditinal-header"
+import ConditionalHeader from "@/components/conditional-header"
 import "./globals.css"
 import AdminPreviewBar from "@/components/admin-preview-bar"
 import { Toaster } from "sonner"
@@ -45,7 +45,7 @@ interface Props {
 export default function RootLayout({ children }: Props) {
   return (
     <html
-      lang="en"
+      lang="uk"
       suppressHydrationWarning
       className={cn("antialiased", fontMono.variable, "font-sans", publicSans.variable, nunito.variable)}
     >

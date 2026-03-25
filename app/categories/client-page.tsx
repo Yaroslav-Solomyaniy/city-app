@@ -3,14 +3,13 @@
 
 import Link from "next/link"
 import React, { useMemo } from "react"
-import { AlertCircle, Baby, Briefcase, Building2, Bus, Calendar, GraduationCap, Heart, Hospital, School, Users, Zap, X } from "lucide-react"
 import { ViewMode, DEFAULT_VIEW } from "@/constants/view-mode"
 import PageLayout, { SidebarSlotItem } from "@/components/page-sidebar/page-layout"
 import { CategoryWithCount } from "@/types/action"
 import CategoriesGrid from "./_components/categories-grid"
 import CategoriesList from "./_components/categories-list"
 import CategoriesTable from "./_components/categories-table"
-import { plural, wordForm } from "@/lib/plural"
+import { plural } from "@/lib/plural"
 import EmptyState from "@/components/empty-state"
 import { parseAsString, useQueryState } from "nuqs"
 import { RecentResourcesList } from "@/app/resources/_components/recent-resources-list"
@@ -18,21 +17,6 @@ import TopCategoriesByResources from "@/components/top-categories-by-resources"
 import LastAddedCategories from "@/components/last-added-categories"
 import ActiveFilters from "@/components/active-filters"
 import ResultsCount from "@/components/result-counts"
-
-const ICON_MAP: Record<string, React.ElementType> = {
-  Heart,
-  GraduationCap,
-  Building2,
-  Users,
-  Zap,
-  Briefcase,
-  Bus,
-  AlertCircle,
-  Calendar,
-  School,
-  Baby,
-  Hospital,
-}
 
 interface Props {
   categories: CategoryWithCount[]

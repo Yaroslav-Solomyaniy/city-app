@@ -39,7 +39,7 @@ export default async function AboutPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
 {/* About */}
         <div className="mb-24 grid grid-cols-1 items-start gap-16 lg:grid-cols-2">
           <div>

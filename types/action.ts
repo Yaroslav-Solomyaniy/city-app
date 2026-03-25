@@ -1,4 +1,4 @@
-import { getAdministrators } from "@/actions/administrators/get-administators"
+import { getAdministrators } from "@/actions/administrators/get-administrators"
 import { getCategories } from "@/actions/category/get-categories"
 import { getCategoryById } from "@/actions/category/get-category-by-id"
 import { getCategoryBySlug } from "@/actions/category/get-category-by-slug"

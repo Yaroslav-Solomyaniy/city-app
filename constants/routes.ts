@@ -1,7 +1,6 @@
 // app/constants/routes.ts
 
 type Route = { href: string; label: string }
-type DynamicRoute<T extends string> = (param: T) => Route
 
 export const ROUTES = {
   // Публічна частина

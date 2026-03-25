@@ -2,7 +2,7 @@
 import { Breadcrumb } from "@/components/ui/breadcrumb"
 import { ROUTES } from "@/constants/routes"
 import { getFeedback } from "@/actions/feedback/feedback"
-import FeedbackClient from "@/app/admin/feedback/page-client"
+import FeedbackClient from "@/app/admin/feedback/client-page"
 import { Suspense } from "react"
 
 export default async function FeedbackPage() {

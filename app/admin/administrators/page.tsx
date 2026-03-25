@@ -1,5 +1,5 @@
 import { requireAuth } from "@/lib/require-auth"
-import { getAdministrators } from "@/actions/administrators/get-administators"
+import { getAdministrators } from "@/actions/administrators/get-administrators"
 import AdministratorsClientPage from "@/app/admin/administrators/client-page"
 
 export default async function AdministratorsPage() {

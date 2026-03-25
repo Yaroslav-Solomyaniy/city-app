@@ -9,7 +9,7 @@ export const NAV_LINKS = [
 ] as const;
 
 
-export const ADMIN_NAV_lINKS = [
+export const ADMIN_NAV_LINKS = [
   {
     title: "Головне",
     items: [

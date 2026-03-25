@@ -20,7 +20,7 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
-import { ADMIN_NAV_lINKS } from "@/constants/nav"
+import { ADMIN_NAV_LINKS } from "@/constants/nav"
 import Image from "next/image"
 
 export function AdminSidebar() {
@@ -64,7 +64,7 @@ export function AdminSidebar() {
 
       {/* ── Nav ── */}
       <SidebarContent>
-        {ADMIN_NAV_lINKS.map((section) => (
+        {ADMIN_NAV_LINKS.map((section) => (
           <SidebarGroup key={section.title}>
             <SidebarGroupLabel>{section.title}</SidebarGroupLabel>
             <SidebarMenu>

@@ -2,7 +2,7 @@ import { getCategories } from "@/actions/category/get-categories"
 import { getResources } from "@/actions/resource/get-resources"
 import { getLogs } from "@/actions/logs/get-logs"
 import { getFeedback } from "@/actions/feedback/feedback"
-import { getAdministrators } from "@/actions/administrators/get-administators"
+import { getAdministrators } from "@/actions/administrators/get-administrators"
 import AdminDashboardClient from "@/app/admin/client-page"
 
 export default async function AdminDashboardPage() {
