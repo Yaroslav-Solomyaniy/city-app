@@ -71,7 +71,7 @@ export default function PageLayout({
 
         {desktopItems.length > 0 && (
           <aside className="hidden w-75 shrink-0 flex-col gap-4 lg:flex xl:w-[320px]" style={{ position: "sticky", top: stickyTop }}>
-            <Image src="/Cherkasy_Color_Mini.png" width={450} height={400} alt="Герб" priority className="transition-transform duration-200" />
+            <Image src="/1.png" width={450} height={400} alt="Герб" priority className="transition-transform duration-200" />
             <PageSidebarSearch search={search} setSearch={setSearch} placeholder={searchPlaceholder} />
             <SidebarViewToggle view={view} setView={setView} />
             {desktopItems.map((item) =>

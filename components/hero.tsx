@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import panorama from "@/public/new_pano.jpeg"
-import iphone from "@/public/iphone.png"
+import iphone from "@/public/iphone_final.png"
 import { Button } from "@/components/ui/button"
 import {  Clock, Code2, Database, LayoutGrid } from "lucide-react"
 import { TypingAnimation } from "@/components/ui/typing-animation"
@@ -20,7 +20,7 @@ export default function Hero() {
       {/* ── Full-bleed panorama background ── */}
       <div className="absolute inset-0 z-0">
         <Image src={panorama} alt="Панорама Черкас" fill priority quality={100} sizes="(max-width: 640px) 400vw, (max-width: 1280px) 200vw, 100vw" className="object-cover object-center" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/10 via-transparent to-black/20" />
       </div>
 
       {/* ── Main content grid ── */}

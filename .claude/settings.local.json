@@ -24,7 +24,15 @@
       "Bash(grep -v \"//.*any\")",
       "Bash(node -e \"const p=require\\(''''/dev/stdin''''\\); console.log\\(JSON.stringify\\({deps: Object.keys\\(p.dependencies||{}\\), devDeps: Object.keys\\(p.devDependencies||{}\\)}, null, 2\\)\\)\")",
       "Bash(npx next:*)",
-      "Bash(node -e \":*)"
+      "Bash(node -e \":*)",
+      "Bash(grep -r \"facebook\\\\|cityce\" C:UsersYaroslavDesktopcity-appapp --include=*.ts --include=*.tsx -l)",
+      "Bash(grep -n \"ResourcesTable\\\\|resources-table\\\\|PublicResource\\\\|PublicCategory\" /c/Users/Yaroslav/Desktop/city-app/app/categories/[slug]/client-page.tsx)",
+      "Bash(grep -n \"ResourcesTable\\\\|resources-table\\\\|PublicResource\\\\|PublicCategory\" /c/Users/Yaroslav/Desktop/city-app/app/categories/[slug]/[subSlug]/client-page.tsx)",
+      "Bash(grep -n \"resources\\\\|category\" /c/Users/Yaroslav/Desktop/city-app/app/categories/[slug]/client-page.tsx)",
+      "Bash(grep:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }
