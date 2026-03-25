@@ -49,17 +49,6 @@ export async function POST(req: NextRequest) {
 
   const link = buildLink(req, invite.token)
 
-  console.log("[invite] EMAIL_SERVER_HOST:", process.env.EMAIL_SERVER_HOST)
-  console.log("[invite] EMAIL_SERVER_PORT:", process.env.EMAIL_SERVER_PORT)
-  console.log("[invite] EMAIL_SERVER_USER:", process.env.EMAIL_SERVER_USER)
-  console.log(
-    "[invite] EMAIL_SERVER_PASSWORD:",
-    process.env.EMAIL_SERVER_PASSWORD ? "✓ є" : "✗ ВІДСУТНІЙ"
-  )
-  console.log("[invite] EMAIL_FROM:", process.env.EMAIL_FROM)
-  console.log("[invite] to:", email)
-  console.log("[invite] link:", link)
-
   try {
     await sendInviteEmail({
       to: email,
@@ -67,9 +56,8 @@ export async function POST(req: NextRequest) {
       host: req.nextUrl.hostname,
       invitedBy: user.name ?? user.email ?? undefined,
     })
-    console.log("[invite] ✓ лист відправлено")
   } catch (err) {
-    console.error("[invite] ✗ помилка відправки:", err)
+    console.error("[invite] помилка відправки листа:", err)
     // Повертаємо invite попри помилку листа — токен вже створено
     return NextResponse.json({
       invite: {
@@ -119,9 +107,7 @@ async function sendInviteEmail({
     },
   })
 
-  // Перевіряємо підключення перед відправкою
   await transport.verify()
-  console.log("[invite] ✓ SMTP підключення OK")
 
   const { subject, html, text } = inviteAdminEmail({
     url: link,
@@ -129,16 +115,13 @@ async function sendInviteEmail({
     invitedBy,
   })
 
-  const info = await transport.sendMail({
+  await transport.sendMail({
     from: process.env.EMAIL_FROM,
     to,
     subject,
     html,
     text,
   })
-
-  console.log("[invite] messageId:", info.messageId)
-  console.log("[invite] response:", info.response)
 }
 
 /* ─── Helpers ────────────────────────────────────────────────── */

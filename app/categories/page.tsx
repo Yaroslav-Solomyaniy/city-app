@@ -1,6 +1,4 @@
 import { Suspense } from "react"
-
-export const dynamic = "force-dynamic"
 import { getCategories } from "@/actions/category/get-categories"
 import CategoriesClient from "@/app/categories/client-page"
 import { getResourcesCount } from "@/actions/resource/get-resources-count"

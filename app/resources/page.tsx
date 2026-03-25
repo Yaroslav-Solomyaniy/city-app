@@ -1,6 +1,7 @@
 import { Suspense } from "react"
-import { getResources } from "@/actions/resource/get-resources"
+import { getResources, getRecentResources } from "@/actions/resource/get-resources"
 import { getCategories } from "@/actions/category/get-categories"
+import { getResourcesCount } from "@/actions/resource/get-resources-count"
 import ResourcesClient from "@/app/resources/client-page"
 import { Metadata } from "next"
 
@@ -16,11 +17,12 @@ interface Props {
 export default async function ResourcesPage({ searchParams }: Props) {
   const { q, cat } = await searchParams
 
-  const [resources, allResources, categories] = await Promise.all([
+  const [resources, recentResources, totalCount, categories] = await Promise.all([
     getResources({ q, categorySlug: cat }),
-    getResources(),
+    getRecentResources(8),
+    getResourcesCount(),
     getCategories(),
   ])
 
-  return <Suspense><ResourcesClient resources={resources} allResources={allResources} categories={categories} /></Suspense>
+  return <Suspense><ResourcesClient resources={resources} recentResources={recentResources} totalCount={totalCount} categories={categories} /></Suspense>
 }

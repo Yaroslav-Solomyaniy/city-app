@@ -6,6 +6,7 @@ import { ExternalLink, X } from "lucide-react"
 import { parseAsString, useQueryState } from "nuqs"
 
 import { DEFAULT_VIEW, ViewMode } from "@/constants/view-mode"
+import { useSearchView } from "@/hooks/use-search-view"
 import PageLayout, { SidebarSlotItem } from "@/components/page-sidebar/page-layout"
 import SidebarStats from "@/components/page-sidebar-stats"
 import { ICON_MAP } from "@/constants/icon-map"
@@ -19,20 +20,14 @@ import ResultsCount from "@/components/result-counts"
 
 interface Props {
   resources: ResourceWithCategory[]
-  allResources: ResourceWithCategory[]
+  recentResources: ResourceWithCategory[]
+  totalCount: number
   categories: CategoryWithCount[]
 }
 
-export default function ResourcesClient({ resources, allResources, categories }: Props) {
-  const [search, setSearch] = useQueryState(
-    "q",
-    parseAsString.withDefault("").withOptions({
-      limitUrlUpdates: { method: "debounce", timeMs: 400 },
-      shallow: false,
-    })
-  )
+export default function ResourcesClient({ resources, recentResources, totalCount, categories }: Props) {
+  const { search, setSearch, view, setView } = useSearchView()
   const [activeCategory, setActiveCategory] = useQueryState("cat", parseAsString.withDefault("all").withOptions({ shallow: false }))
-  const [view, setView] = useQueryState("view", parseAsString.withDefault(DEFAULT_VIEW).withOptions({ shallow: false }))
 
   const activeCategoryLabel = useMemo(() => categories.find((c) => c.slug === activeCategory)?.title ?? null, [categories, activeCategory])
 
@@ -48,21 +43,21 @@ export default function ResourcesClient({ resources, allResources, categories }:
             count: cat._count.resources,
           }))}
           activeSlug={activeCategory}
-          totalCount={allResources.length}
+          totalCount={totalCount}
           onSelect={setActiveCategory}
         />
       ),
     },
     {
       title: "Нещодавно додані",
-      content: <RecentResourcesList resources={allResources} />,
+      content: <RecentResourcesList resources={recentResources} />,
     },
     {
       title: "Статистика",
       content: (
         <SidebarStats
           items={[
-            { label: "Всього ресурсів", value: allResources.length },
+            { label: "Всього ресурсів", value: totalCount },
             { label: "Всього категорій", value: categories.length },
           ]}
         />
@@ -99,7 +94,7 @@ export default function ResourcesClient({ resources, allResources, categories }:
           }}
         />
 
-        <ResultsCount count={resources.length} total={allResources.length} word="ресурсів" />
+        <ResultsCount count={resources.length} total={totalCount} word="ресурс" />
 
         {resources.length === 0 ? (
           <EmptyState

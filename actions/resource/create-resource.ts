@@ -1,10 +1,16 @@
 "use server"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import prisma from "@/lib/prisma"
-import { ResourceFormData } from "@/types/action"
 import { requireAuth } from "@/lib/require-auth"
+import { ResourceSchema } from "@/lib/validations/resource"
+import type { ResourceFormData } from "@/types/action"
 
 export async function createResource(categoryId: string, data: ResourceFormData) {
+  const parsed = ResourceSchema.safeParse(data)
+  if (!parsed.success) {
+    throw new Error(parsed.error.issues[0]?.message ?? "Невірні дані")
+  }
+
   const user = await requireAuth()
 
   const maxOrder = await prisma.resource.aggregate({
@@ -15,12 +21,12 @@ export async function createResource(categoryId: string, data: ResourceFormData)
 
   const resource = await prisma.resource.create({
     data: {
-      title: data.title.trim(),
-      description: data.description.trim() || null,
-      url: data.url.trim(),
-      icon: data.icon,
-      tags: data.tags,
-      subcategoryId: data.subcategoryId || null,
+      title: parsed.data.title.trim(),
+      description: parsed.data.description.trim() || null,
+      url: parsed.data.url.trim(),
+      icon: parsed.data.icon,
+      tags: parsed.data.tags,
+      subcategoryId: parsed.data.subcategoryId || null,
       categoryId,
       order,
     },
@@ -40,7 +46,8 @@ export async function createResource(categoryId: string, data: ResourceFormData)
     },
   })
 
+  revalidateTag("resources", {})
+  revalidateTag("categories", {})
   revalidatePath(`/admin/categories/${categoryId}`)
-  revalidatePath(`/categories/${categoryId}`)
   return resource
 }

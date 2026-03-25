@@ -5,9 +5,11 @@ import { getCategoryBySlug } from "@/actions/category/get-category-by-slug"
 import { getResources } from "@/actions/resource/get-resources"
 import { getCategoriesWithSubs } from "@/actions/category/get-category-with-subs"
 
+// ─── Generic ──────────────────────────────────────────────────
 export type Action<T = undefined> = { ok: true; data?: T } | { ok: false; error: string }
 export type TokenStatus = "valid" | "invalid" | "used" | "expired"
 
+// ─── Admin ────────────────────────────────────────────────────
 export type InvitePayload = {
   id: string
   email: string
@@ -28,7 +30,7 @@ export type LogEntry = {
   createdAt: string
 }
 
-
+// ─── Form data ────────────────────────────────────────────────
 export type SubcategoryFormData = {
   title: string
   titleEn: string
@@ -44,23 +46,19 @@ export type ResourceFormData = {
   subcategoryId: string | null
 }
 
+// ─── Derived from actions ─────────────────────────────────────
 export type Admin = Awaited<ReturnType<typeof getAdministrators>>["admins"][number]
 export type CategoryWithCount = Awaited<ReturnType<typeof getCategories>>[number]
 
-////============  CATEGORY =============== //////
 export type CategoryDetail = NonNullable<Awaited<ReturnType<typeof getCategoryById>>>
 export type SubcategoryItem = CategoryDetail["subcategories"][number]
 export type ResourceItem = CategoryDetail["resources"][number]
 export type CategoryWithSubs = Awaited<ReturnType<typeof getCategoriesWithSubs>>[number]
 
-//============== PUBLIC CATEGORY =======================/////////
 export type PublicCategory = NonNullable<Awaited<ReturnType<typeof getCategoryBySlug>>>
 export type PublicSubcategory = PublicCategory["subcategories"][number]
 export type PublicResource = PublicCategory["resources"][number]
 
-
-////// ================ RESOURCES ======================= //////
 export type ResourceWithCategory = Awaited<ReturnType<typeof getResources>>[number]
-export type ResourceWithRelations = Awaited<ReturnType<typeof getResources>>[number]
-
-
+/** @deprecated Use ResourceWithCategory */
+export type ResourceWithRelations = ResourceWithCategory

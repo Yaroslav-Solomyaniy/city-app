@@ -6,6 +6,7 @@ import { LogEntry } from "@/types/action"
 
 const VALID_ACTIONS = ["create", "edit", "delete", "login", "logout", "invite"] as const
 type LogAction = (typeof VALID_ACTIONS)[number]
+type PrismaLogAction = Uppercase<LogAction>
 
 interface GetLogsParams {
   q?: string
@@ -22,7 +23,7 @@ export async function getLogs(params: GetLogsParams = {}): Promise<LogEntry[]> {
 
   const logs = await prisma.activityLog.findMany({
     where: {
-      ...(actionUpper ? { action: actionUpper as any } : {}),
+      ...(actionUpper ? { action: actionUpper as PrismaLogAction } : {}),
       ...(user ? { userName: user } : {}),
       ...(q
         ? {

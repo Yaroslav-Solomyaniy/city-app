@@ -15,7 +15,7 @@ export default async function AdminDashboardPage() {
   ])
 
   return (
-    <div className="fixed inset-0 z-10 overflow-auto bg-background">
+    <div className="min-h-screen overflow-auto bg-background">
       <AdminDashboardClient
         categories={categories}
         resources={resources}

@@ -1,7 +1,7 @@
 "use server"
 import { requireAuth } from "@/lib/require-auth"
 import prisma from "@/lib/prisma"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 
 export async function deleteCategory(id: string) {
   const user = await requireAuth()
@@ -22,6 +22,6 @@ export async function deleteCategory(id: string) {
     },
   })
 
-  revalidatePath("/admin/category")
-  revalidatePath("/category")
+  revalidateTag("categories", {})
+  revalidatePath("/admin/categories")
 }

@@ -3,7 +3,7 @@
 
 import Link from "next/link"
 import React, { useMemo } from "react"
-import { ViewMode, DEFAULT_VIEW } from "@/constants/view-mode"
+import { ViewMode } from "@/constants/view-mode"
 import PageLayout, { SidebarSlotItem } from "@/components/page-sidebar/page-layout"
 import { CategoryWithCount } from "@/types/action"
 import CategoriesGrid from "./_components/categories-grid"
@@ -11,7 +11,7 @@ import CategoriesList from "./_components/categories-list"
 import CategoriesTable from "./_components/categories-table"
 import { plural } from "@/lib/plural"
 import EmptyState from "@/components/empty-state"
-import { parseAsString, useQueryState } from "nuqs"
+import { useSearchView } from "@/hooks/use-search-view"
 import { RecentResourcesList } from "@/app/resources/_components/recent-resources-list"
 import TopCategoriesByResources from "@/components/top-categories-by-resources"
 import LastAddedCategories from "@/components/last-added-categories"
@@ -24,14 +24,10 @@ interface Props {
 }
 
 export default function CategoriesClient({ categories, resourcesCount }: Props) {
-  const [search, setSearch] = useQueryState(
-    "q",
-    parseAsString.withDefault("").withOptions({
-      limitUrlUpdates: { method: "throttle", timeMs: 300 },
-      shallow: true,
-    })
-  )
-  const [view, setView] = useQueryState("view", parseAsString.withDefault(DEFAULT_VIEW).withOptions({ shallow: true }))
+  const { search, setSearch, view, setView } = useSearchView({
+    limitUrlUpdates: { method: "throttle", timeMs: 300 },
+    shallow: true,
+  })
 
   const filtered = useMemo(
     () =>
@@ -77,7 +73,7 @@ export default function CategoriesClient({ categories, resourcesCount }: Props) 
       >
         <ActiveFilters filters={[...(search ? [{ key: "q", label: `🔍 «${search}»`, onRemove: () => setSearch("") }] : [])]} />
 
-        <ResultsCount count={filtered.length} total={categories.length} word="категорій" />
+        <ResultsCount count={filtered.length} total={categories.length} word="категорія" />
 
         {filtered.length === 0 ? (
           <EmptyState variant={search ? "search" : "empty"} query={search} onResetSearch={() => setSearch("")} />

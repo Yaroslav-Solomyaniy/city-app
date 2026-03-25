@@ -2,7 +2,7 @@ import { Suspense } from "react"
 import { getLogs, getLogUsers } from "@/actions/logs/get-logs"
 import { Breadcrumb } from "@/components/ui/breadcrumb"
 import { ROUTES } from "@/constants/routes"
-import LogsClient from "@/app/admin/logs/logs-client"
+import LogsClient from "@/app/admin/logs/client-page"
 
 interface Props {
   searchParams: Promise<{ action?: string; user?: string }>

@@ -10,14 +10,7 @@ import InviteAdminList from "@/components/admin/invite-admin-list"
 import { Breadcrumb } from "@/components/ui/breadcrumb"
 import { ROUTES } from "@/constants/routes"
 import { Admin, InvitePayload } from "@/types/action"
-
-
-const AVATAR_COLORS = [
-  "from-violet-500 to-purple-600",
-  "from-blue-500 to-cyan-500",
-  "from-emerald-500 to-teal-500",
-  "from-orange-400 to-rose-500",
-]
+import { AVATAR_COLORS } from "@/constants/avatar-colors"
 
 interface Props {
   admins: Admin[]

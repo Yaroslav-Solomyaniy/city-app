@@ -2,8 +2,9 @@
 
 import { requireAuth } from "@/lib/require-auth"
 import prisma from "@/lib/prisma"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { ActionResult } from "next/dist/shared/lib/app-router-types"
+import { FeedbackInputSchema, type FeedbackInput } from "@/lib/validations/feedback"
 
 export type FeedbackEntry = {
   id: string
@@ -23,12 +24,12 @@ const TYPE_MAP = {
   "add-category": "ADD_CATEGORY",
 } as const
 
-function buildMessage(data: Record<string, string>): string {
+function buildMessage(data: FeedbackInput): string {
   const who = `${data.author} (${data.email})`
 
   switch (data.type) {
     case "feedback":
-      return data.message ?? "—"
+      return data.message
 
     case "add-resource":
       return [
@@ -56,25 +57,41 @@ function buildMessage(data: Record<string, string>): string {
       ]
         .filter(Boolean)
         .join("\n")
+  }
+}
 
-    default:
-      return "—"
+function buildSubject(data: FeedbackInput): string {
+  switch (data.type) {
+    case "feedback":
+      return data.subject
+    case "add-resource":
+      return data.name
+    case "remove-resource":
+      return data.resource
+    case "add-category":
+      return data.name
   }
 }
 
 export async function createFeedback(data: Record<string, string>): Promise<ActionResult> {
+  const parsed = FeedbackInputSchema.safeParse(data)
+  if (!parsed.success) {
+    const message = parsed.error.issues[0]?.message ?? "Невірні дані"
+    return { ok: false, error: message }
+  }
+
   try {
     await prisma.feedback.create({
       data: {
-        type: TYPE_MAP[data.type as keyof typeof TYPE_MAP],
-        author: data.author,
-        email: data.email,
-        subject: data.subject ?? data.name ?? data.resource ?? "—",
-        message: buildMessage(data),
+        type: TYPE_MAP[parsed.data.type],
+        author: parsed.data.author,
+        email: parsed.data.email,
+        subject: buildSubject(parsed.data),
+        message: buildMessage(parsed.data),
       },
     })
     return { ok: true }
-  } catch (e) {
+  } catch {
     return { ok: false, error: "Не вдалося надіслати звернення" }
   }
 }
@@ -106,6 +123,7 @@ export async function setFeedbackStatus(id: string, status: "NEW" | "REVIEWED" |
     data: { status },
   })
 
+  revalidateTag("feedback", {})
   revalidatePath("/admin/feedback")
 }
 
@@ -114,5 +132,6 @@ export async function deleteFeedback(id: string) {
 
   await prisma.feedback.delete({ where: { id } })
 
+  revalidateTag("feedback", {})
   revalidatePath("/admin/feedback")
 }

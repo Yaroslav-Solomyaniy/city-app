@@ -1,4 +1,5 @@
-// app/(pages)/auth/layout.tsx
+export const dynamic = "force-dynamic"
+
 import React from "react"
 import {
   SidebarProvider,

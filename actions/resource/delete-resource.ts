@@ -2,7 +2,7 @@
 
 import { requireAuth } from "@/lib/require-auth"
 import prisma from "@/lib/prisma"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 
 export async function deleteResource(id: string) {
   const user = await requireAuth()
@@ -23,6 +23,7 @@ export async function deleteResource(id: string) {
     },
   })
 
+  revalidateTag("resources", {})
+  revalidateTag("categories", {})
   revalidatePath(`/admin/categories/${resource.categoryId}`)
-  revalidatePath(`/categories/${resource.categoryId}`)
 }

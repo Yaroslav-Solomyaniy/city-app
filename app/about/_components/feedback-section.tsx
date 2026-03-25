@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import FeedBackFormContent from "@/app/about/_components/feed-back-form-content"
+import FeedBackFormContent from "@/app/about/_components/feedback-form-content"
 import { CategoryWithCount, ResourceWithCategory } from "@/types/action"
 
 const FeedBackVariant: IFeedBackFormVariant[] = [

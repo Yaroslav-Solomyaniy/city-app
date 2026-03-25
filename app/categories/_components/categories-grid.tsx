@@ -39,16 +39,16 @@ export default function CategoriesGrid({ categories }: Props) {
                     <Icon size={17} color={cat.accent} strokeWidth={1.8} />
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate text-[13.5px] leading-tight font-semibold text-foreground">{cat.title}</p>
-                    {cat.titleEn && <p className="text-[11px] text-muted-foreground">{cat.titleEn}</p>}
+                    <p className="truncate text-sm leading-tight font-semibold text-foreground">{cat.title}</p>
+                    {cat.titleEn && <p className="text-[12px] text-muted-foreground">{cat.titleEn}</p>}
                   </div>
                 </div>
               </div>
 
               {/* Список послуг */}
-              <ul className="mb-3 flex flex-1 list-none flex-col gap-1 p-0">
+              <ul className="mb-3 mt-3 flex flex-1 list-none flex-col gap-1 p-0">
                 {cat.services.map((s) => (
-                  <li key={s} className="flex items-center gap-2 text-[12.5px] text-muted-foreground">
+                  <li key={s} className="flex items-center gap-2 text-[13px] text-muted-foreground">
                     <span className="h-1 w-1 shrink-0 rounded-full opacity-50" style={{ background: cat.accent }} />
                     {s}
                   </li>
@@ -57,8 +57,8 @@ export default function CategoriesGrid({ categories }: Props) {
 
               {/* Footer */}
               <div className="mt-auto flex items-center justify-between border-t pt-3">
-                <span className="text-[11px] text-muted-foreground">{plural(count, 'ресурс')}</span>
-                <span className="text-[12.5px] font-semibold" style={{ color: cat.accent }}>
+                <span className="text-[12px] text-muted-foreground">{plural(count, 'ресурс')}</span>
+                <span className="text-[12px] font-semibold" style={{ color: cat.accent }}>
                   Переглянути →
                 </span>
               </div>

@@ -1,17 +1,20 @@
 "use server"
 import { requireAuth } from "@/lib/require-auth"
 import prisma from "@/lib/prisma"
-import { revalidatePath } from "next/cache"
-import { CategoryFormData } from "@/actions/category/create-category"
+import { revalidatePath, revalidateTag } from "next/cache"
+import { CategorySchema } from "@/lib/validations/category"
 
-export async function updateCategory(id: string, data: CategoryFormData) {
+export async function updateCategory(id: string, data: unknown) {
+  const parsed = CategorySchema.safeParse(data)
+  if (!parsed.success) {
+    throw new Error(parsed.error.issues[0]?.message ?? "Невірні дані")
+  }
+
   const user = await requireAuth()
-
-  const { originalPhoto, ...rest } = data as CategoryFormData & { originalPhoto?: string }
 
   const category = await prisma.category.update({
     where: { id },
-    data: rest,
+    data: parsed.data,
   })
 
   await prisma.activityLog.create({
@@ -26,8 +29,7 @@ export async function updateCategory(id: string, data: CategoryFormData) {
     },
   })
 
+  revalidateTag("categories", {})
   revalidatePath("/admin/categories")
-  revalidatePath("/categories")
-  revalidatePath(`/categories/${category.slug}`)
   return category
 }

@@ -8,7 +8,23 @@
       "Bash(firebase deploy:*)",
       "Bash(curl -s https://docs.uploadthing.com/getting-started/appdir)",
       "WebFetch(domain:docs.uploadthing.com)",
-      "Bash(grep -rn upload_ C:/Users/Yaroslav/Desktop/app/app/admin/categories/[id]/client-page.tsx)"
+      "Bash(grep -rn upload_ C:/Users/Yaroslav/Desktop/app/app/admin/categories/[id]/client-page.tsx)",
+      "Bash(xargs cat:*)",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Read(//c/Users/Yaroslav/Desktop/app/**)",
+      "Bash(done)",
+      "Bash(npx prisma:*)",
+      "Bash(node -e \"const p = require\\(''''./node_modules/next/dist/server/web/spec-extension/revalidate.js''''\\); console.log\\(''''ok''''\\)\")",
+      "Bash(grep -r export.*revalidateTag node_modules/next/dist/shared/)",
+      "Bash(ls -la actions/*/)",
+      "Bash(wc -l actions/**/*.ts)",
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(item[''''text'''']\\) for item in data if item.get\\(''''type''''\\)==''''text'''']\")",
+      "Bash(node -e \"const fs=require\\(''''fs''''\\); const data=JSON.parse\\(fs.readFileSync\\(''''C:/Users/Yaroslav/.claude/projects/C--Users-Yaroslav-Desktop-app/50ffab4e-0f84-4396-b4c5-9a7805062fa4/tool-results/toolu_01PmomtnuyEoCdZxtPht1HBN.json''''\\)\\); data.filter\\(i=>i.type===''''text''''\\).forEach\\(i=>console.log\\(i.text\\)\\)\")",
+      "Bash(grep -v \"//.*any\")",
+      "Bash(node -e \"const p=require\\(''''/dev/stdin''''\\); console.log\\(JSON.stringify\\({deps: Object.keys\\(p.dependencies||{}\\), devDeps: Object.keys\\(p.devDependencies||{}\\)}, null, 2\\)\\)\")",
+      "Bash(npx next:*)",
+      "Bash(node -e \":*)"
     ]
   }
 }

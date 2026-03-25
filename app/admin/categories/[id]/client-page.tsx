@@ -48,8 +48,6 @@ export default function CategoryDetailClient({ category: initial }: { category: 
   const subs = category.subcategories
   const resources = category.resources
 
-  console.log("resources", resources)
-
   const filteredRes = useMemo(() => {
     const q = resSearch.toLowerCase()
     if (!q) return resources
@@ -69,13 +67,6 @@ export default function CategoryDetailClient({ category: initial }: { category: 
     })
     return groups
   }, [filteredRes, subs])
-
-  console.log("resGroups", resGroups) // це після useMemo
-
-  console.log("🔍 resources count:", resources.length)
-  console.log("🔍 resources:", resources)
-
-  console.log("🔍 resGroups:", resGroups)
 
   const Icon = ICON_MAP[category.iconName] ?? ICON_MAP.Building2
 

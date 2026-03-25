@@ -2,7 +2,7 @@
 
 import { requireAuth } from "@/lib/require-auth"
 import prisma from "@/lib/prisma"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 
 export async function moveResource(id: string, newCategoryId: string, newSubcategoryId: string | null) {
   const user = await requireAuth()
@@ -30,11 +30,11 @@ export async function moveResource(id: string, newCategoryId: string, newSubcate
     },
   })
 
+  revalidateTag("resources", {})
+  revalidateTag("categories", {})
   revalidatePath(`/admin/categories/${old.categoryId}`)
   revalidatePath(`/admin/categories/${newCategoryId}`)
-  revalidatePath(`/admin/resources`)
-  revalidatePath(`/categories/${old.categoryId}`)
-  revalidatePath(`/categories/${newCategoryId}`)
+  revalidatePath("/admin/resources")
 
   return resource
 }

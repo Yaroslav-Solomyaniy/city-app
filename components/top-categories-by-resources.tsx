@@ -28,7 +28,7 @@ const TopCategoriesByResources = ({ categories }: Props) => {
           <Link
             key={cat.id}
             href={`/categories/${cat.slug}`}
-            className={`flex items-center gap-3 px-5 py-2.5 text-[13px] transition-colors hover:bg-muted/40 ${i < items.length - 1 ? "border-b" : ""}`}
+            className={`flex items-center gap-3 px-2 py-2.5 text-[13px] transition-colors hover:bg-muted/40 ${i < items.length - 1 ? "border-b" : ""}`}
           >
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg" style={{ background: cat.bg }}>
               <Icon size={13} color={cat.accent} strokeWidth={1.8} />

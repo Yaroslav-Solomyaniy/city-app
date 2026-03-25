@@ -4,12 +4,12 @@ import Link from "next/link"
 import Image from "next/image"
 import React from "react"
 import { ArrowLeft, ChevronRight } from "lucide-react"
-import { parseAsString, useQueryState } from "nuqs"
 import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ViewMode, DEFAULT_VIEW } from "@/constants/view-mode"
+import { useSearchView } from "@/hooks/use-search-view"
 import PageLayout, { SidebarSlotItem } from "@/components/page-sidebar/page-layout"
 import { ICON_MAP } from "@/constants/icon-map"
 import { PublicCategory, PublicSubcategory } from "@/types/action"
@@ -29,14 +29,7 @@ interface Props {
 export default function SubCategoryPageClient({ category, allCategory, subcategory }: Props) {
   const router = useRouter()
 
-  const [search, setSearch] = useQueryState(
-    "q",
-    parseAsString.withDefault("").withOptions({
-      limitUrlUpdates: { method: "debounce", timeMs: 400 },
-      shallow: false,
-    })
-  )
-  const [view, setView] = useQueryState("view", parseAsString.withDefault(DEFAULT_VIEW).withOptions({ shallow: false }))
+  const { search, setSearch, view, setView } = useSearchView()
 
   const CatIcon = ICON_MAP[category.iconName] ?? ICON_MAP.Building2
 
@@ -143,11 +136,14 @@ export default function SubCategoryPageClient({ category, allCategory, subcatego
             className="absolute inset-0"
             style={{ background: `linear-gradient(135deg, ${category.accent}cc 0%, ${category.accent}44 50%, transparent 95%)` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
+          <div className="absolute inset-0 bg-linear-to-b from-transparent to-black/20" />
 
           <div className="relative">
             <div className="mb-4">
-              <Link href={`/categories/${category.slug}`} className="inline-flex items-center gap-2 rounded-lg border border-white/30 px-3 py-1.5 text-sm font-medium text-white/80 transition-colors hover:border-white/60 hover:text-white">
+              <Link
+                href={`/categories/${category.slug}`}
+                className="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/15 px-3 py-1.5 text-sm font-medium text-white/80 transition-colors hover:border-white/60 hover:text-white"
+              >
                 <ArrowLeft size={14} /> Повернутись до категорії: {category.title}
               </Link>
             </div>
@@ -178,9 +174,9 @@ export default function SubCategoryPageClient({ category, allCategory, subcatego
         stickyTop={80}
         showMoreButton={false}
       >
-        <Button variant="ghost" size="sm" className="mb-4 gap-1.5 px-0 text-[13px] font-semibold hover:bg-transparent" onClick={goBack}>
-          <ArrowLeft size={14} /> Назад до «{category.title}»
-        </Button>
+        {/*<Button variant="ghost" size="sm" className="mb-4 gap-1.5 px-0 text-[13px] font-semibold hover:bg-transparent" onClick={goBack}>*/}
+        {/*  <ArrowLeft size={14} /> Назад до «{category.title}»*/}
+        {/*</Button>*/}
 
         <ActiveFilters filters={[...(search ? [{ key: "q", label: `🔍 «${search}»`, onRemove: () => setSearch("") }] : [])]} />
 

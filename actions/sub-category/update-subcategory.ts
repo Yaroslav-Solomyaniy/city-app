@@ -1,18 +1,23 @@
 "use server"
-import { SubcategoryFormData } from "@/types/action"
 import { requireAuth } from "@/lib/require-auth"
 import prisma from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
+import { SubcategorySchema } from "@/lib/validations/subcategory"
 
-export async function updateSubcategory(id: string, data: SubcategoryFormData) {
+export async function updateSubcategory(id: string, data: unknown) {
+  const parsed = SubcategorySchema.safeParse(data)
+  if (!parsed.success) {
+    throw new Error(parsed.error.issues[0]?.message ?? "Невірні дані")
+  }
+
   const user = await requireAuth()
 
   const sub = await prisma.subcategory.update({
     where: { id },
     data: {
-      title: data.title.trim(),
-      titleEn: data.titleEn.trim() || data.title.trim(),
-      description: data.description?.trim() ?? "",
+      title: parsed.data.title.trim(),
+      titleEn: parsed.data.titleEn.trim() || parsed.data.title.trim(),
+      description: parsed.data.description?.trim() ?? "",
     },
   })
 
