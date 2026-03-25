@@ -26,6 +26,7 @@ import { isSortableOperation } from "@dnd-kit/dom/sortable"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
@@ -36,7 +37,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { ICON_MAP } from "@/constants/icon-map"
 import { cn } from "@/lib/utils"
 import { toSlug } from "@/lib/slug"
-import { CategoryWithCount } from "@/types/action"
+import { CategoryWithCount, CategoryDetail } from "@/types/action"
 import ImageUpload from "@/components/image-upload"
 import { CategoryFormData, createCategory } from "@/actions/category/create-category"
 import { updateCategory } from "@/actions/category/update-category"
@@ -121,7 +122,7 @@ function SortableCategoryRow({
         </div>
       </TableCell>
 
-      <TableCell className="py-3.5">
+      <TableCell className="hidden py-3.5 sm:table-cell">
         <span
           className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-semibold"
           style={{ background: cat.bg, color: cat.accent }}
@@ -147,7 +148,7 @@ function SortableCategoryRow({
             <ChevronRight size={14} className="text-muted-foreground/40" />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100">
+                <Button variant="ghost" size="icon" className="h-8 w-8">
                   <MoreHorizontal size={16} />
                 </Button>
               </DropdownMenuTrigger>
@@ -399,7 +400,7 @@ export default function AdminCategoriesClient({ categories: initial }: { categor
 
       {/* Table */}
       <Card className="overflow-hidden rounded-2xl border p-0 shadow-sm">
-        <CardContent className="p-0">
+        <CardContent className="overflow-x-auto p-0">
           <DragDropProvider
             onDragEnd={(event) => {
               if (event.canceled || !isSortableOperation(event.operation)) return
@@ -419,7 +420,7 @@ export default function AdminCategoriesClient({ categories: initial }: { categor
                   <TableHead className="hidden text-[11px] font-bold tracking-wider text-muted-foreground uppercase md:table-cell">
                     Послуги
                   </TableHead>
-                  <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">Ресурси</TableHead>
+                  <TableHead className="hidden text-[11px] font-bold tracking-wider text-muted-foreground uppercase sm:table-cell">Ресурси</TableHead>
                   <TableHead className="hidden text-[11px] font-bold tracking-wider text-muted-foreground uppercase sm:table-cell">
                     Створено
                   </TableHead>
@@ -512,13 +513,13 @@ export default function AdminCategoriesClient({ categories: initial }: { categor
 // CATEGORY FORM DIALOG
 // ═══════════════════════════════════════════════════════════════
 
-function CategoryFormDialog({
+export function CategoryFormDialog({
   category,
   isPending,
   onSave,
   onClose,
 }: {
-  category?: CategoryWithCount
+  category?: CategoryWithCount | CategoryDetail
   isPending: boolean
   onSave: (data: CategoryFormData & { originalPhoto?: string }) => void
   onClose: () => void
@@ -576,7 +577,7 @@ function CategoryFormDialog({
 
         {/* Header */}
         <div className="flex shrink-0 items-center gap-3 border-b px-6 py-4">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all" style={{ background: accent + "20" }}>
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all" style={{ background: bg }}>
             <SelectedIcon size={17} color={accent} />
           </div>
           <div>
@@ -610,8 +611,16 @@ function CategoryFormDialog({
 
           {/* Description */}
           <div className="flex flex-col gap-1.5">
-            <Label className="text-xs tracking-wider uppercase">Опис</Label>
-            <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Коротко про категорію" />
+            <Label className="flex items-center justify-between text-xs tracking-wider uppercase">
+              <span>Опис</span>
+              <span className="font-normal normal-case text-muted-foreground">{description.length}/400</span>
+            </Label>
+            <Textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value.slice(0, 400))}
+              placeholder="Коротко про категорію"
+              className="min-h-[80px] resize-none"
+            />
           </div>
 
           {/* Icon picker */}
@@ -672,11 +681,11 @@ function CategoryFormDialog({
               <div className="flex gap-2">
                 <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md border">
                   <div className="h-full w-full" style={{ background: accent }} />
-                  <input
+                  <Input
                     type="color"
                     value={accent}
                     onChange={(e) => setAccent(e.target.value)}
-                    className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                    className="absolute inset-0 h-full w-full cursor-pointer border-0 p-0 opacity-0 shadow-none"
                   />
                 </div>
                 <Input value={accent} onChange={(e) => setAccent(e.target.value)} className="flex-1 font-mono text-xs" />
@@ -689,11 +698,11 @@ function CategoryFormDialog({
               <div className="flex gap-2">
                 <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md border">
                   <div className="h-full w-full" style={{ background: bg }} />
-                  <input
+                  <Input
                     type="color"
                     value={bg}
                     onChange={(e) => setBg(e.target.value)}
-                    className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                    className="absolute inset-0 h-full w-full cursor-pointer border-0 p-0 opacity-0 shadow-none"
                   />
                 </div>
                 <Input value={bg} onChange={(e) => setBg(e.target.value)} className="flex-1 font-mono text-xs" />

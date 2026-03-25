@@ -47,23 +47,34 @@ export default function InviteAdminList({ invites }: Props) {
 
       <div className="space-y-2">
         {invites.map((invite) => (
-          <div key={invite.id} className="flex items-center gap-4 rounded-2xl border bg-card px-5 py-4 transition-colors hover:bg-muted/30">
-            <div
-              className={cn(
-                "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl",
-                invite.used ? "bg-emerald-100 dark:bg-emerald-900/30" : "bg-amber-100 dark:bg-amber-900/30"
-              )}
-            >
-              {invite.used ? (
-                <CheckCircle2 size={16} className="text-emerald-600 dark:text-emerald-400" />
-              ) : (
-                <Clock size={16} className="text-amber-600 dark:text-amber-400" />
-              )}
-            </div>
+          <div key={invite.id} className="rounded-2xl border bg-card px-4 py-3 transition-colors hover:bg-muted/30">
+            <div className="flex items-center gap-3">
+              <div
+                className={cn(
+                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl",
+                  invite.used ? "bg-emerald-100 dark:bg-emerald-900/30" : "bg-amber-100 dark:bg-amber-900/30"
+                )}
+              >
+                {invite.used ? (
+                  <CheckCircle2 size={16} className="text-emerald-600 dark:text-emerald-400" />
+                ) : (
+                  <Clock size={16} className="text-amber-600 dark:text-amber-400" />
+                )}
+              </div>
 
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-[13.5px] font-semibold text-foreground">{invite.email}</p>
-              <p className="text-[11.5px] text-muted-foreground">Діє до {invite.expires}</p>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[13.5px] font-semibold text-foreground">{invite.email}</p>
+                <p className="text-[11.5px] text-muted-foreground">Діє до {invite.expires}</p>
+              </div>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 shrink-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                onClick={() => handleRevoke(invite.id, invite.email)}
+              >
+                <XCircle size={15} />
+              </Button>
             </div>
 
             {!invite.used && (
@@ -72,21 +83,12 @@ export default function InviteAdminList({ invites }: Props) {
                 size="sm"
                 onClick={() => handleResend(invite.id, invite.email)}
                 disabled={resendingId === invite.id}
-                className="h-8 shrink-0 gap-1.5 rounded-lg text-[12px]"
+                className="mt-2.5 h-8 w-full gap-1.5 rounded-lg text-[12px]"
               >
                 <Send size={12} className={cn(resendingId === invite.id && "animate-pulse")} />
                 {resendingId === invite.id ? "Надсилаємо..." : "Надіслати повторно"}
               </Button>
             )}
-
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 shrink-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-              onClick={() => handleRevoke(invite.id, invite.email)}
-            >
-              <XCircle size={15} />
-            </Button>
           </div>
         ))}
       </div>

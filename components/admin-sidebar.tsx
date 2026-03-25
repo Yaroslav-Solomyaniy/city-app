@@ -18,6 +18,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
+  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
 import { ADMIN_NAV_LINKS } from "@/constants/nav"
@@ -27,18 +29,28 @@ export function AdminSidebar() {
   const pathname = usePathname()
   const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const { setOpen, setOpenMobile, isMobile } = useSidebar()
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 0)
     return () => clearTimeout(t)
   }, [])
 
+  // Close sidebar after navigation on mobile/tablet (below lg = 1024px)
+  useEffect(() => {
+    if (isMobile) {
+      setOpenMobile(false)
+    } else if (typeof window !== "undefined" && window.innerWidth < 1024) {
+      setOpen(false)
+    }
+  }, [pathname])
+
   const isDark = resolvedTheme === "dark"
   const toggleTheme = () => setTheme(isDark ? "light" : "dark")
   const isActive = (href: string) => (href === "/admin" ? pathname === "/admin" : pathname === href || pathname.startsWith(href + "/"))
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="offcanvas" className="top-14 h-[calc(100svh-3.5rem)]">
       {/* ── Header ── */}
       <SidebarHeader className="pb-0">
         <Link href="/" className="relative flex flex-col items-center gap-2 px-2 pt-5 pb-4 no-underline">

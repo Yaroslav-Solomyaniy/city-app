@@ -68,7 +68,6 @@ export default function CategoryPageClient({ category, allCategory }: Props) {
           </div>
           <div>
             <p className="text-[14px] font-semibold text-foreground">{allCategory.title}</p>
-            <p className="text-[11px] text-muted-foreground">{allCategory.titleEn}</p>
           </div>
         </div>
         {allCategory.description && <p className="text-[13px] leading-relaxed text-muted-foreground">{allCategory.description}</p>}
@@ -143,7 +142,7 @@ export default function CategoryPageClient({ category, allCategory }: Props) {
               </div>
               <div>
                 <h1 className="text-2xl leading-tight font-bold text-white sm:text-3xl">{category.title}</h1>
-                <p className="text-[13px] text-white/70">{category.titleEn}</p>
+                {category.titleEn && <p className="text-[13px] text-white/70">{category.titleEn}</p>}
               </div>
             </div>
 

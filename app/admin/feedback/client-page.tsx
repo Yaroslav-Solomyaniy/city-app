@@ -28,6 +28,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import { deleteFeedback, FeedbackEntry, setFeedbackStatus } from "@/actions/feedback/feedback"
+import EmptyState from "@/components/empty-state"
 
 type FeedbackType = "feedback" | "add-resource" | "remove-resource" | "add-category"
 type FeedbackStatus = "new" | "reviewed" | "resolved"
@@ -278,7 +279,7 @@ export default function FeedbackClient({ initialItems }: { initialItems: Feedbac
 
       {/* Table */}
       <Card className="overflow-hidden rounded-2xl border p-0 shadow-sm">
-        <CardContent className="p-0">
+        <CardContent className="overflow-x-auto p-0">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/40 hover:bg-muted/40">
@@ -297,14 +298,14 @@ export default function FeedbackClient({ initialItems }: { initialItems: Feedbac
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="py-20 text-center">
-                    <div className="flex flex-col items-center gap-2">
-                      <p className="text-4xl">📭</p>
-                      <p className="text-[14px] font-semibold text-foreground">Звернень не знайдено</p>
-                      <Button variant="link" className="text-[13px]" onClick={resetFilters}>
-                        Скинути фільтри
-                      </Button>
-                    </div>
+                  <TableCell colSpan={6} className="px-5 py-5">
+                    <EmptyState
+                      variant={urlSearch || filterType || filterStatus ? "search" : "empty"}
+                      query={urlSearch || undefined}
+                      hasFilter={!!(filterType || filterStatus)}
+                      onResetSearch={resetFilters}
+                      onResetFilter={resetFilters}
+                    />
                   </TableCell>
                 </TableRow>
               ) : (
@@ -375,7 +376,7 @@ export default function FeedbackClient({ initialItems }: { initialItems: Feedbac
                       <TableCell className="py-3.5 pr-3" onClick={(e) => e.stopPropagation()}>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 transition-opacity group-hover:opacity-100">
+                            <Button variant="ghost" size="icon" className="h-7 w-7">
                               <MoreHorizontal size={15} />
                             </Button>
                           </DropdownMenuTrigger>

@@ -22,6 +22,7 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
@@ -35,6 +36,8 @@ import { deleteSubcategory } from "@/actions/sub-category/delete-subcategory"
 import { createResource } from "@/actions/resource/create-resource"
 import { updateResource } from "@/actions/resource/update-resource"
 import { deleteResource } from "@/actions/resource/delete-resource"
+import { updateCategory } from "@/actions/category/update-category"
+import { CategoryFormDialog } from "@/app/admin/categories/client-page"
 
 // ═══════════════════════════════════════════════════════════════
 // CLIENT PAGE
@@ -44,6 +47,8 @@ export default function CategoryDetailClient({ category: initial }: { category: 
   const router = useRouter()
   const [category, setCategory] = useState(initial)
   const [resSearch, setResSearch] = useState("")
+  const [showEdit, setShowEdit] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
   const subs = category.subcategories
   const resources = category.resources
@@ -161,6 +166,29 @@ export default function CategoryDetailClient({ category: initial }: { category: 
     }
   }
 
+  // ── Edit category handler ─────────────────────────────────
+
+  async function handleEditCategory(data: import("@/actions/category/create-category").CategoryFormData & { originalPhoto?: string }) {
+    const { originalPhoto, ...formData } = data
+    startTransition(async () => {
+      try {
+        const updated = await updateCategory(category.id, formData)
+        setCategory((prev) => ({ ...prev, ...updated }))
+        setShowEdit(false)
+        toast.success("Категорію оновлено")
+        if (originalPhoto && originalPhoto !== updated.photo) {
+          await fetch("/api/upload", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: originalPhoto }),
+          })
+        }
+      } catch {
+        toast.error("Не вдалося зберегти зміни")
+      }
+    })
+  }
+
   // ── Render ─────────────────────────────────────────────────
 
   return (
@@ -196,6 +224,9 @@ export default function CategoryDetailClient({ category: initial }: { category: 
               <p className="mt-0.5 text-[13px] text-muted-foreground">
                 {category.titleEn} · slug: {category.slug}
               </p>
+              {category.description && (
+                <p className="mt-1 text-[13px] text-muted-foreground">{category.description}</p>
+              )}
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-3">
@@ -211,7 +242,7 @@ export default function CategoryDetailClient({ category: initial }: { category: 
               <p className="text-[18px] font-bold text-foreground">{resources.length}</p>
               <p className="mt-0.5 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">ресурсів</p>
             </div>
-            <Button variant="outline" size="sm" className="gap-2" onClick={() => router.push("/admin/categories")}>
+            <Button variant="outline" size="sm" className="gap-2" onClick={() => setShowEdit(true)}>
               <Pencil size={14} /> Редагувати
             </Button>
           </div>
@@ -249,6 +280,15 @@ export default function CategoryDetailClient({ category: initial }: { category: 
           onDelete={handleDeleteRes}
         />
       </div>
+
+      {showEdit && (
+        <CategoryFormDialog
+          category={category}
+          isPending={isPending}
+          onSave={handleEditCategory}
+          onClose={() => setShowEdit(false)}
+        />
+      )}
     </div>
   )
 }
@@ -452,7 +492,7 @@ function SubcategoriesPanel({
                     {sub.titleEn} · {resCountFor(sub.id)} ресурсів
                   </p>
                 </div>
-                <div className="flex shrink-0 gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                <div className="flex shrink-0 gap-1">
                   <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" onClick={() => startEdit(sub)}>
                     <Pencil size={12} />
                   </Button>
@@ -660,7 +700,7 @@ function ResourcesPanel({
                             href={res.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="opacity-0 transition-opacity group-hover:opacity-60"
+                            className="opacity-50"
                             style={{ color: cat.accent }}
                           >
                             <ExternalLink size={11} />
@@ -683,7 +723,7 @@ function ResourcesPanel({
                         ))}
                       </div>
                     </div>
-                    <div className="flex shrink-0 gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                    <div className="flex shrink-0 gap-1">
                       <Button
                         variant="ghost"
                         size="icon"
@@ -775,12 +815,18 @@ function ResourceForm({
         </div>
       </div>
       <div className="flex flex-col gap-1.5">
-        <Label className="flex items-center gap-1 text-[10px] tracking-wider uppercase">
-          <AlignLeft size={9} /> Опис
+        <Label className="flex items-center justify-between text-[10px] tracking-wider uppercase">
+          <span className="flex items-center gap-1"><AlignLeft size={9} /> Опис</span>
+          <span className="font-normal normal-case text-muted-foreground">{description.length}/300</span>
         </Label>
-        <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Короткий опис" />
+        <Textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value.slice(0, 300))}
+          placeholder="Короткий опис ресурсу"
+          className="min-h-[80px] resize-none"
+        />
       </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <Label className="flex items-center gap-1 text-[10px] tracking-wider uppercase">
             <Layers size={9} /> Підкатегорія

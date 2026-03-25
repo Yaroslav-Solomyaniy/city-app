@@ -75,8 +75,9 @@ export default function SubCategoryPageClient({ category, allCategory, subcatego
             <CatIcon size={17} color={allCategory.accent} strokeWidth={1.8} />
           </div>
           <div>
-            <p className="text-[14px] font-semibold text-foreground">{allCategory.title}</p>
-            <p className="text-[11px] text-muted-foreground">{allCategory.titleEn}</p>
+            <div>
+              <p className="text-[14px] font-semibold text-foreground">{allCategory.title}</p>
+            </div>
           </div>
         </div>
         {allCategory.description && <p className="text-[13px] leading-relaxed text-muted-foreground">{allCategory.description}</p>}
@@ -157,7 +158,7 @@ export default function SubCategoryPageClient({ category, allCategory, subcatego
               </div>
               <div>
                 <h1 className="text-2xl leading-tight font-bold text-white sm:text-3xl">{subcategory.title}</h1>
-                <p className="text-[13px] text-white/70">{subcategory.titleEn}</p>
+                {subcategory.titleEn && <p className="text-[13px] text-white/70">{subcategory.titleEn}</p>}
               </div>
             </div>
           </div>

@@ -21,16 +21,17 @@ import {
   MoreHorizontal,
   ChevronDown,
   ChevronRight,
+  AlertCircle,
 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -304,126 +305,147 @@ export default function AdminResourcesClient({ resources: initial, categories }:
       {/* Table */}
       <Card className="overflow-hidden rounded-2xl border p-0 shadow-sm">
         <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/40 hover:bg-muted/40">
-                <TableHead className="pl-5 text-[11px] font-bold tracking-wider text-muted-foreground uppercase">Ресурс</TableHead>
-                <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">Категорія</TableHead>
-                <TableHead className="hidden text-[11px] font-bold tracking-wider text-muted-foreground uppercase md:table-cell">
-                  Підкатегорія
-                </TableHead>
-                <TableHead className="hidden text-[11px] font-bold tracking-wider text-muted-foreground uppercase lg:table-cell">
-                  Теги
-                </TableHead>
-                <TableHead className="hidden text-[11px] font-bold tracking-wider text-muted-foreground uppercase sm:table-cell">
-                  Створено
-                </TableHead>
-                <TableHead className="w-[80px]" />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+          {/* Mobile list */}
+          <div className="md:hidden">
+            {filtered.length === 0 ? (
+              <div className="px-5 py-5">
+                <EmptyState variant={search ? "search" : "empty"} query={search} onResetSearch={() => setSearch("")} />
+              </div>
+            ) : (
+              filtered.map((res) => {
+                const CatIcon = ICON_MAP[res.category.iconName] ?? ICON_MAP.Building2
+                return (
+                  <div key={res.id} className="flex items-center gap-3 border-b px-4 py-3 last:border-0" onClick={() => { setEditItem(res); setShowAdd(false) }}>
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" style={{ background: res.category.bg }}>
+                      <LinkIcon size={14} color={res.category.accent} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[13px] font-semibold text-foreground">{res.title}</p>
+                      <p className="text-[11px] text-muted-foreground" style={{ color: res.category.accent }}>{res.category.title}</p>
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+                          <MoreHorizontal size={16} />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-44">
+                        <DropdownMenuItem onClick={() => { setEditItem(res); setShowAdd(false) }}>
+                          <Pencil size={14} /> Редагувати
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setMoveItem(res)}>
+                          <FolderOpen size={14} /> Перемістити
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-destructive" onClick={() => setDeleteItem(res)}>
+                          <Trash2 size={14} /> Видалити
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                )
+              })
+            )}
+          </div>
+
+          {/* Desktop table */}
+          <table className="hidden w-full border-collapse md:table">
+            <thead>
+              <tr className="border-b bg-muted/40">
+                <th className="py-3 pl-5 text-left text-[11px] font-bold tracking-wider text-muted-foreground uppercase">Ресурс</th>
+                <th className="hidden w-[140px] py-3 px-4 text-left text-[11px] font-bold tracking-wider text-muted-foreground uppercase md:table-cell">Категорія</th>
+                <th className="hidden w-[160px] py-3 px-4 text-left text-[11px] font-bold tracking-wider text-muted-foreground uppercase lg:table-cell">Підкатегорія</th>
+                <th className="hidden w-[180px] py-3 px-4 text-left text-[11px] font-bold tracking-wider text-muted-foreground uppercase lg:table-cell">Теги</th>
+                <th className="hidden w-[110px] py-3 px-4 text-left text-[11px] font-bold tracking-wider text-muted-foreground uppercase md:table-cell">Створено</th>
+                <th className="w-[56px]" />
+              </tr>
+            </thead>
+            <tbody>
               {filtered.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="px-5 py-5">
+                <tr>
+                  <td colSpan={6} className="px-5 py-5">
                     <EmptyState variant={search ? "search" : "empty"} query={search} onResetSearch={() => setSearch("")} />
-                  </TableCell>
-                </TableRow>
+                  </td>
+                </tr>
               ) : (
                 filtered.map((res) => {
                   const CatIcon = ICON_MAP[res.category.iconName] ?? ICON_MAP.Building2
                   return (
-                    <TableRow
+                    <tr
                       key={res.id}
                       className="group cursor-pointer border-b transition-colors last:border-0 hover:bg-muted/30"
-                      onClick={() => router.push(`/admin/categories/${res.categoryId}`)}
+                      onClick={() => { setEditItem(res); setShowAdd(false) }}
                     >
                       {/* Ресурс */}
-                      <TableCell className="py-3.5 pl-5">
-                        <div className="flex items-center gap-3">
+                      <td className="max-w-0 overflow-hidden py-3.5 pl-5">
+                        <div className="flex min-w-0 items-center gap-3">
                           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" style={{ background: res.category.bg }}>
                             <LinkIcon size={14} color={res.category.accent} />
                           </div>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-1.5">
+                          <div className="min-w-0 overflow-hidden">
+                            <div className="flex min-w-0 items-center gap-1.5">
                               <span className="truncate text-[13.5px] leading-tight font-semibold text-foreground">{res.title}</span>
                               {res.url && (
-                                <a
-                                  href={res.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="shrink-0 text-muted-foreground hover:text-foreground"
-                                >
+                                <a href={res.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="shrink-0 text-muted-foreground hover:text-foreground">
                                   <ExternalLink size={11} />
                                 </a>
                               )}
                             </div>
-                            {res.description && <p className="max-w-[220px] truncate text-[11px] text-muted-foreground">{res.description}</p>}
+                            {res.description && <p className="truncate text-[11px] text-muted-foreground">{res.description}</p>}
                           </div>
                         </div>
-                      </TableCell>
+                      </td>
 
                       {/* Категорія */}
-                      <TableCell className="py-3.5">
+                      <td className="hidden py-3.5 px-4 md:table-cell">
                         <div className="flex items-center gap-1.5">
                           <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md" style={{ background: res.category.bg }}>
                             <CatIcon size={10} color={res.category.accent} />
                           </div>
                           <span className="text-[12px] font-medium text-muted-foreground">{res.category.title}</span>
                         </div>
-                      </TableCell>
+                      </td>
 
                       {/* Підкатегорія */}
-                      <TableCell className="hidden py-3.5 md:table-cell">
+                      <td className="hidden py-3.5 px-4 lg:table-cell">
                         {res.subcategory ? (
                           <Badge variant="secondary" className="gap-1" style={{ background: res.category.bg, color: res.category.accent }}>
-                            <Layers size={9} />
-                            {res.subcategory.title}
+                            <Layers size={9} /> {res.subcategory.title}
                           </Badge>
                         ) : (
                           <span className="text-muted-foreground">—</span>
                         )}
-                      </TableCell>
+                      </td>
 
                       {/* Теги */}
-                      <TableCell className="hidden py-3.5 lg:table-cell">
+                      <td className="hidden py-3.5 px-4 lg:table-cell">
                         <div className="flex flex-wrap gap-1">
                           {res.tags.slice(0, 2).map((tag) => (
-                            <Badge
-                              key={tag}
-                              variant="outline"
-                              className="text-[10.5px]"
-                              style={{ color: res.category.accent, borderColor: res.category.accent + "44" }}
-                            >
+                            <Badge key={tag} variant="outline" className="text-[10.5px]" style={{ color: res.category.accent, borderColor: res.category.accent + "44" }}>
                               #{tag}
                             </Badge>
                           ))}
                           {res.tags.length > 2 && <span className="text-[10.5px] text-muted-foreground">+{res.tags.length - 2}</span>}
                         </div>
-                      </TableCell>
+                      </td>
 
                       {/* Дата */}
-                      <TableCell className="hidden py-3.5 sm:table-cell">
+                      <td className="hidden py-3.5 px-4 md:table-cell">
                         <span className="text-[12px] text-muted-foreground">{formatDate(res.createdAt)}</span>
-                      </TableCell>
+                      </td>
 
                       {/* Actions */}
-                      <TableCell className="py-3.5 pr-3" onClick={(e) => e.stopPropagation()}>
+                      <td className="py-3.5 pr-3" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center gap-1">
                           <ChevronRight size={14} className="text-muted-foreground/40" />
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100">
+                              <Button variant="ghost" size="icon" className="h-8 w-8">
                                 <MoreHorizontal size={16} />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-44">
-                              <DropdownMenuItem
-                                onClick={() => {
-                                  setEditItem(res)
-                                  setShowAdd(false)
-                                }}
-                              >
+                              <DropdownMenuItem onClick={() => { setEditItem(res); setShowAdd(false) }}>
                                 <Pencil size={14} /> Редагувати
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => setMoveItem(res)}>
@@ -436,18 +458,18 @@ export default function AdminResourcesClient({ resources: initial, categories }:
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </div>
-                      </TableCell>
-                    </TableRow>
+                      </td>
+                    </tr>
                   )
                 })
               )}
-            </TableBody>
-          </Table>
+            </tbody>
+          </table>
           <Separator />
           <div className="px-5 py-3">
             <p className="text-[12px] text-muted-foreground">
               Показано <span className="font-semibold text-foreground">{filtered.length}</span> з{" "}
-              <span className="font-semibold text-foreground">{initial.length}</span> · Клікніть на рядок щоб перейти до категорії
+              <span className="font-semibold text-foreground">{initial.length}</span> · Клікніть на рядок щоб редагувати
               {filterCatId && (
                 <Button variant="link" className="ml-1 h-auto p-0 text-[12px]" onClick={() => setFilterCatId(null)}>
                   · зняти фільтр
@@ -561,7 +583,7 @@ function ResourceFormDialog({
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="flex max-h-[90vh] max-w-xl flex-col gap-0 overflow-hidden p-0">
+      <DialogContent className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-xl">
         {/* Accent bar */}
         {cat && <div className="h-1 shrink-0 rounded-t-[inherit]" style={{ background: cat.accent }} />}
 
@@ -584,34 +606,30 @@ function ResourceFormDialog({
         {/* Body */}
         <div className="flex-1 space-y-4 overflow-y-auto px-6 py-5">
           {/* Category selector */}
-          <div>
-            <Label className="mb-2 flex items-center gap-1.5 text-xs tracking-wider uppercase">
+          <div className="flex flex-col gap-1.5">
+            <Label className="flex items-center gap-1.5 text-xs tracking-wider uppercase">
               <FolderOpen size={11} /> Категорія *
             </Label>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {categories.map((c) => {
-                const Icon = ICON_MAP[c.iconName] ?? ICON_MAP.Building2
-                const active = catId === c.id
-                return (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => {
-                      setCatId(c.id)
-                      setSubId(null)
-                    }}
-                    className="flex items-center gap-2 rounded-xl border px-3 py-2.5 text-left text-[12px] font-medium transition-all hover:bg-muted"
-                    style={active ? { background: c.bg, borderColor: c.accent + "66", color: c.accent } : {}}
-                  >
-                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md" style={{ background: c.bg }}>
-                      <Icon size={11} color={c.accent} />
-                    </div>
-                    <span className="truncate">{c.title}</span>
-                    {active && <Check size={11} className="ml-auto shrink-0" style={{ color: c.accent }} />}
-                  </button>
-                )
-              })}
-            </div>
+            <Select value={catId} onValueChange={(v) => { setCatId(v); setSubId(null) }}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Оберіть категорію" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((c) => {
+                  const Icon = ICON_MAP[c.iconName] ?? ICON_MAP.Building2
+                  return (
+                    <SelectItem key={c.id} value={c.id}>
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded" style={{ background: c.bg }}>
+                          <Icon size={9} color={c.accent} />
+                        </div>
+                        {c.title}
+                      </div>
+                    </SelectItem>
+                  )
+                })}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Title + URL */}
@@ -632,20 +650,26 @@ function ResourceFormDialog({
 
           {/* Description */}
           <div className="flex flex-col gap-1.5">
-            <Label className="flex items-center gap-1.5 text-xs tracking-wider uppercase">
-              <AlignLeft size={10} /> Опис
+            <Label className="flex items-center justify-between gap-1.5 text-xs tracking-wider uppercase">
+              <span className="flex items-center gap-1.5"><AlignLeft size={10} /> Опис</span>
+              <span className="font-normal normal-case text-muted-foreground">{description.length}/300</span>
             </Label>
-            <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Короткий опис" />
+            <Textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value.slice(0, 300))}
+              placeholder="Короткий опис ресурсу"
+              className="min-h-[80px] resize-none"
+            />
           </div>
 
           {/* Subcategory + Tags */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">
               <Label className="flex items-center gap-1.5 text-xs tracking-wider uppercase">
                 <Layers size={10} /> Підкатегорія
               </Label>
               <Select value={subId ?? "__none__"} onValueChange={(v) => setSubId(v === "__none__" ? null : v)}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="— Напряму в категорії —" />
                 </SelectTrigger>
                 <SelectContent>
@@ -703,15 +727,28 @@ function MoveDialog({
   const subs = selectedCat?.subcategories ?? []
   const changed = newCatId !== resource.categoryId || newSubId !== resource.subcategoryId
 
+  const CurIcon = ICON_MAP[resource.category.iconName] ?? ICON_MAP.Building2
+
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>Перемістити ресурс</DialogTitle>
-          <p className="truncate text-sm text-muted-foreground">{resource.title}</p>
-        </DialogHeader>
+      <DialogContent className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-md">
+        {/* Accent bar */}
+        <div className="h-1 shrink-0 rounded-t-[inherit]" style={{ background: resource.category.accent }} />
 
-        <div className="space-y-4">
+        {/* Header */}
+        <div className="flex shrink-0 items-center gap-3 border-b px-5 py-4">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" style={{ background: resource.category.bg }}>
+            <CurIcon size={17} color={resource.category.accent} />
+          </div>
+          <div className="min-w-0">
+            <DialogTitle className="truncate text-[15px]">{resource.title}</DialogTitle>
+            <p className="text-[12px] text-muted-foreground">Перемістити до іншої категорії</p>
+          </div>
+        </div>
+
+        {/* Scrollable body */}
+        <div className="relative flex-1 overflow-y-auto">
+          <div className="space-y-4 px-5 py-4">
           <div>
             <Label className="mb-2 block text-xs tracking-wider text-muted-foreground uppercase">Оберіть категорію</Label>
             <div className="grid grid-cols-2 gap-2">
@@ -761,16 +798,27 @@ function MoveDialog({
               </div>
             </div>
           )}
+          </div>
+
+          {subs.length > 0 && (
+            <div className="sticky bottom-0 px-5 pb-4">
+              <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50/90 px-3.5 py-2.5 shadow-sm backdrop-blur-sm dark:border-amber-900/50 dark:bg-amber-950/80">
+                <AlertCircle size={14} className="shrink-0 text-amber-600 dark:text-amber-400" />
+                <p className="text-[12px] text-amber-700 dark:text-amber-400">Після зміни категорії не забудьте обрати підкатегорію</p>
+              </div>
+            </div>
+          )}
         </div>
 
-        <DialogFooter className="flex gap-3 sm:flex-row">
+        {/* Footer */}
+        <div className="flex shrink-0 gap-3 border-t px-5 py-4">
           <Button variant="outline" className="flex-1" onClick={onClose}>
             Скасувати
           </Button>
           <Button className="flex-1" disabled={!changed || isPending} onClick={() => onMove(resource, newCatId, newSubId)}>
             <Check size={13} /> {isPending ? "Переміщення..." : "Перемістити"}
           </Button>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   )

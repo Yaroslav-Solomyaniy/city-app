@@ -17,7 +17,7 @@ export default function AdminLayout({
     <SidebarProvider>
       <AdminSidebar />
       <SidebarInset>
-        <header className="flex h-14 items-center gap-3 border-b bg-card/80 px-4 backdrop-blur-md lg:hidden">
+        <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-card/80 px-4 backdrop-blur-md">
           <SidebarTrigger />
           <span className="text-[13px] font-bold text-foreground">
             Адмін-панель

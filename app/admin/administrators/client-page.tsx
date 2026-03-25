@@ -23,9 +23,9 @@ export default function AdministratorsClient({ admins, invites, currentUserId }:
   const [deleteAdminId, setDeleteAdminId] = useState<string | null>(null)
 
   return (
-    <div className="mx-auto max-w-250 space-y-10">
+    <div className="mx-auto max-w-5xl space-y-10">
       {/* Header */}
-      <div className="flex items-end justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <Breadcrumb items={[ROUTES.ADMIN.ROOT, ROUTES.ADMIN.ADMINISTRATORS]} />
           <h1 className="text-[32px] font-bold tracking-tight text-foreground">Адміністратори</h1>
