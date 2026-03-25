@@ -1,4 +1,5 @@
 import React from "react"
+import Link from "next/link"
 import { CodeXml, Lightbulb, PencilRuler, SlidersHorizontal } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -39,7 +40,7 @@ export default async function AboutPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        {/* About */}
+{/* About */}
         <div className="mb-24 grid grid-cols-1 items-start gap-16 lg:grid-cols-2">
           <div>
             <Badge variant="secondary" className="mb-4 text-xs tracking-widest uppercase">

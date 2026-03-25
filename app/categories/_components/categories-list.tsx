@@ -30,13 +30,7 @@ export default function CategoriesList({ categories }: Props) {
               <p className="text-[14px] leading-tight font-semibold text-foreground">{cat.title}</p>
               <p className="mt-0.5 truncate text-[13px] text-muted-foreground">{cat.services.join(", ")}</p>
             </div>
-            <span
-              className="hidden shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold sm:inline-flex"
-              style={{ background: cat.bg, color: cat.accent }}
-            >
-              {plural(count, 'ресурс')}
-            </span>
-            <span
+<span
               className="shrink-0 text-[13px] font-medium transition-transform duration-150 group-hover:translate-x-0.5"
               style={{ color: cat.accent }}
             >

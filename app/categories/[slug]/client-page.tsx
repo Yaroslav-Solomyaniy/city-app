@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import React from "react"
-import { ChevronRight } from "lucide-react"
+import { ArrowLeft, ChevronRight } from "lucide-react"
 import { parseAsString, useQueryState } from "nuqs"
 import { useRouter } from "next/navigation"
 
@@ -135,12 +135,10 @@ export default function CategoryPageClient({ category, allCategory }: Props) {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
 
           <div className="relative">
-            <div className="mb-3 flex flex-wrap items-center gap-1.5 text-[13px] text-white/70">
-              <Link href="/categories" className="transition-colors hover:text-white">
-                Категорії
+            <div className="mb-4">
+              <Link href="/categories" className="inline-flex items-center gap-2 rounded-lg border border-white/30 px-3 py-1.5 text-sm font-medium text-white/80 transition-colors hover:border-white/60 hover:text-white">
+                <ArrowLeft size={14} /> Повернутись до списку категорій
               </Link>
-              <span className="text-[10px]">›</span>
-              <span className="text-white">{category.title}</span>
             </div>
 
             <div className="flex items-center gap-3">

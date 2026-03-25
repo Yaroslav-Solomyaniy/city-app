@@ -73,7 +73,7 @@ export default function ResourcesClient({ resources, allResources, categories }:
   return (
     <div className="relative min-h-screen bg-background">
       <div className="mx-auto max-w-7xl px-4 pt-10 pb-6 sm:px-6">
-        <h1 className="mb-2 text-[clamp(28px,4vw,48px)] leading-tight font-bold text-foreground">Перелік ресурсів</h1>
+<h1 className="mb-2 text-[clamp(28px,4vw,48px)] leading-tight font-bold text-foreground">Перелік ресурсів</h1>
         <p className="text-[15px] text-muted-foreground">
           Це підбірка ресурсів, що допомагають швидше вирішувати побутові питання, залишатися в курсі подій у місті та користуватися
           онлайн-можливостями Черкас без поділу на категорії

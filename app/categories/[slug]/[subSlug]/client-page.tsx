@@ -146,16 +146,10 @@ export default function SubCategoryPageClient({ category, allCategory, subcatego
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
 
           <div className="relative">
-            <div className="mb-3 flex flex-wrap items-center gap-1.5 text-[13px] text-white/70">
-              <Link href="/categories" className="transition-colors hover:text-white">
-                Категорії
+            <div className="mb-4">
+              <Link href={`/categories/${category.slug}`} className="inline-flex items-center gap-2 rounded-lg border border-white/30 px-3 py-1.5 text-sm font-medium text-white/80 transition-colors hover:border-white/60 hover:text-white">
+                <ArrowLeft size={14} /> Повернутись до категорії: {category.title}
               </Link>
-              <span className="text-[10px]">›</span>
-              <Link href={`/categories/${category.slug}`} className="transition-colors hover:text-white">
-                {category.title}
-              </Link>
-              <span className="text-[10px]">›</span>
-              <span className="text-white">{subcategory.title}</span>
             </div>
 
             <div className="flex items-center gap-3">
