@@ -7,10 +7,9 @@ import { Menu, Search, X } from "lucide-react"
 
 import { NAV_LINKS } from "@/constants/nav"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
-import Image from "next/image"
+import GlobalSearch from "@/components/global-search"
 
 export default function Header() {
   const pathname = usePathname()
@@ -26,6 +25,17 @@ export default function Header() {
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
   }, [isHome])
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault()
+        setSearchOpen(true)
+      }
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [])
 
   const isActive = (href: string) => pathname === href || (href !== "/" && pathname.startsWith(href))
 
@@ -74,44 +84,25 @@ export default function Header() {
             <div className="flex-1 md:hidden" />
             <div className="hidden h-7 w-px shrink-0 bg-border/60 xl:block" />
 
-            <div
-              className={cn(
-                "hidden items-center overflow-hidden rounded-full border transition-all duration-300 md:flex",
-                searchOpen ? "w-50 border-primary/40 bg-muted/50" : "w-8.5 border-transparent"
-              )}
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="hidden items-center gap-2 rounded-full border border-border/50 bg-muted/40 px-3 py-1.5 text-[12.5px] text-muted-foreground transition-colors hover:bg-muted md:flex"
             >
-              <Button variant="ghost" size="icon-sm" onClick={() => setSearchOpen((o) => !o)} className="shrink-0 rounded-full">
-                {searchOpen ? <X className="size-3.5" /> : <Search className="size-3.5" />}
-              </Button>
-              {searchOpen && (
-                <Input
-                  autoFocus
-                  placeholder="Пошук..."
-                  className="h-auto border-0 bg-transparent px-1 py-0 text-[13px] shadow-none focus-visible:ring-0"
-                  onKeyDown={(e) => e.key === "Escape" && setSearchOpen(false)}
-                />
-              )}
-            </div>
+              <Search size={13} />
+              <span>Пошук</span>
+              <kbd className="ml-1 rounded border bg-background px-1 py-0.5 text-[10px] font-medium">⌃K</kbd>
+            </button>
 
-            <Button variant="ghost" size="icon-sm" className="rounded-xl md:hidden" onClick={() => setSearchOpen((o) => !o)}>
-              {searchOpen ? <X className="size-3.5" /> : <Search className="size-3.5" />}
+            <Button variant="ghost" size="icon-sm" className="rounded-xl md:hidden" onClick={() => setSearchOpen(true)}>
+              <Search className="size-3.5" />
             </Button>
 
-            <MobileMenu isActive={isActive} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} closeMenu={closeMenu} />
+            <MobileMenu isActive={isActive} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} closeMenu={closeMenu} onSearch={() => setSearchOpen(true)} />
           </div>
 
-          <Image src="/kozak.png" alt="Козак" className="block h-8" width={32} height={32} priority={true} />
+          <img src="/kozak.png" alt="Козак" className="block h-8 object-contain" />
 
-          {/*{searchOpen && (*/}
-          {/*  <div className="border-t px-4 py-2.5 md:hidden">*/}
-          {/*    <Input*/}
-          {/*      autoFocus*/}
-          {/*      placeholder="Пошук по порталу..."*/}
-          {/*      className="h-9"*/}
-          {/*      onKeyDown={(e) => e.key === "Escape" && setSearchOpen(false)}*/}
-          {/*    />*/}
-          {/*  </div>*/}
-          {/*)}*/}
+          <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
         </div>
       </div>
     )
@@ -152,39 +143,25 @@ export default function Header() {
 
         <div className="flex-1 md:hidden" />
 
-        {/*<div*/}
-        {/*  className={cn(*/}
-        {/*    "hidden items-center overflow-hidden rounded-full border transition-all duration-300 md:flex",*/}
-        {/*    searchOpen ? "w-50 border-primary/40 bg-muted/50" : "w-8.5 border-transparent"*/}
-        {/*  )}*/}
-        {/*>*/}
-        {/*  <Button variant="ghost" size="icon-sm" onClick={() => setSearchOpen((o) => !o)} className="shrink-0 rounded-full">*/}
-        {/*    {searchOpen ? <X className="size-3.5" /> : <Search className="size-3.5" />}*/}
-        {/*  </Button>*/}
-        {/*  {searchOpen && (*/}
-        {/*    <Input*/}
-        {/*      autoFocus*/}
-        {/*      placeholder="Пошук..."*/}
-        {/*      className="h-auto border-0 bg-transparent px-1 py-0 text-[13px] shadow-none focus-visible:ring-0"*/}
-        {/*      onKeyDown={(e) => e.key === "Escape" && setSearchOpen(false)}*/}
-        {/*    />*/}
-        {/*  )}*/}
-        {/*</div>*/}
+        <button
+          onClick={() => setSearchOpen(true)}
+          className="hidden items-center gap-2 rounded-full border bg-muted/40 px-3 py-1.5 text-[12.5px] text-muted-foreground transition-colors hover:bg-muted md:flex"
+        >
+          <Search size={13} />
+          <span>Пошук</span>
+          <kbd className="ml-1 rounded border bg-background px-1 py-0.5 text-[10px] font-medium">⌃K</kbd>
+        </button>
 
         <img src="/kozak.png" alt="Козак" className="w-8 object-contain" />
 
-        {/*<Button variant="ghost" size="icon-sm" className="rounded-xl md:hidden" onClick={() => setSearchOpen((o) => !o)}>*/}
-        {/*  {searchOpen ? <X className="size-3.5" /> : <Search className="size-3.5" />}*/}
-        {/*</Button>*/}
+        <Button variant="ghost" size="icon-sm" className="rounded-xl md:hidden" onClick={() => setSearchOpen(true)}>
+          <Search className="size-3.5" />
+        </Button>
 
-        <MobileMenu isActive={isActive} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} closeMenu={closeMenu} />
+        <MobileMenu isActive={isActive} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} closeMenu={closeMenu} onSearch={() => setSearchOpen(true)} />
       </div>
 
-      {searchOpen && (
-        <div className="border-t px-4 py-2.5 md:hidden">
-          <Input autoFocus placeholder="Пошук по порталу..." className="h-9" onKeyDown={(e) => e.key === "Escape" && setSearchOpen(false)} />
-        </div>
-      )}
+      <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   )
 }
@@ -196,11 +173,13 @@ function MobileMenu({
   mobileOpen,
   setMobileOpen,
   closeMenu,
+  onSearch,
 }: {
   isActive: (href: string) => boolean
   mobileOpen: boolean
   setMobileOpen: (v: boolean) => void
   closeMenu: () => void
+  onSearch: () => void
 }) {
   return (
     <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
@@ -214,7 +193,13 @@ function MobileMenu({
           <SheetTitle className="text-left text-sm">СітіЧе — Громадський портал Черкас</SheetTitle>
         </SheetHeader>
         <div className="px-4 pb-2">
-          <Input placeholder="Пошук по порталу..." className="h-9" />
+          <button
+            onClick={() => { setMobileOpen(false); onSearch() }}
+            className="flex w-full items-center gap-2 rounded-xl border bg-muted/40 px-3 py-2 text-[13px] text-muted-foreground"
+          >
+            <Search size={14} />
+            <span>Пошук по порталу...</span>
+          </button>
         </div>
         <nav className="flex flex-col gap-1 px-4">
           {NAV_LINKS.map(({ href, label }) => (
