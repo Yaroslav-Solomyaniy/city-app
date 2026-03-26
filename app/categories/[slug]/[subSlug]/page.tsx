@@ -19,6 +19,10 @@ export async function generateMetadata({
   const title = sub.titleEn ? `${sub.title} — ${sub.titleEn}` : sub.title
   const description = `Онлайн-ресурси підкатегорії «${sub.title}» категорії «${category.title}» Черкаської громади.`
 
+  const ogImage = category.photo
+    ? { url: category.photo, width: 1200, height: 630, alt: category.title }
+    : { url: "https://www.city-che.ck.ua/opengraph-image", width: 1200, height: 630 }
+
   return {
     title,
     description,
@@ -26,7 +30,7 @@ export async function generateMetadata({
       title: `${title} | СітіЧЕ`,
       description,
       url: `/categories/${slug}/${subSlug}`,
-      images: [{ url: "https://www.city-che.ck.ua/opengraph-image", width: 1200, height: 630 }],
+      images: [ogImage],
     },
   }
 }
