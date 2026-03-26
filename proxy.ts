@@ -10,6 +10,12 @@ function isPublic(pathname: string) {
   if (pathname.startsWith("/categories/")) return true
   if (pathname.startsWith("/resources")) return true
   if (AUTH_PATHS.some((p) => pathname.startsWith(p))) return true
+  // SEO & Next.js system routes
+  if (pathname === "/opengraph-image") return true
+  if (pathname === "/sitemap.xml") return true
+  if (pathname === "/robots.txt") return true
+  if (pathname === "/favicon.ico") return true
+  if (pathname.startsWith("/opengraph-image")) return true
   return false
 }
 
