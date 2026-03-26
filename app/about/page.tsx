@@ -1,6 +1,7 @@
 import React from "react"
 import { Metadata } from "next"
 import Link from "next/link"
+import { ogImageUrl } from "@/lib/site"
 
 export const metadata: Metadata = {
   title: "Про портал",
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
     title: "Про портал | СітіЧЕ",
     description: "Дізнайтесь більше про СітіЧЕ — вебпортал Черкаської міської громади.",
     url: "/about",
-    images: [{ url: "https://www.city-che.ck.ua/opengraph-image", width: 1200, height: 630 }],
+    images: [{ url: ogImageUrl, width: 1200, height: 630 }],
   },
 }
 import { CodeXml, Lightbulb, PencilRuler, SlidersHorizontal } from "lucide-react"

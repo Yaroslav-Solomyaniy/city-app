@@ -1,6 +1,5 @@
 import { MetadataRoute } from "next"
-
-const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.city-che.ck.ua"
+import { siteUrl } from "@/lib/site"
 
 export default function robots(): MetadataRoute.Robots {
   return {

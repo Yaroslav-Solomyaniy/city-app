@@ -4,6 +4,7 @@ import { getCategories } from "@/actions/category/get-categories"
 import { getResourcesCount } from "@/actions/resource/get-resources-count"
 import ResourcesClient from "@/app/resources/client-page"
 import { Metadata } from "next"
+import { ogImageUrl } from "@/lib/site"
 
 export const metadata: Metadata = {
   title: "Перелік ресурсів",
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
     title: "Перелік ресурсів | СітіЧЕ",
     description: "Повний перелік онлайн-ресурсів Черкаської громади.",
     url: "/resources",
-    images: [{ url: "https://www.city-che.ck.ua/opengraph-image", width: 1200, height: 630 }],
+    images: [{ url: ogImageUrl, width: 1200, height: 630 }],
   },
 }
 

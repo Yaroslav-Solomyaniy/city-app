@@ -1,7 +1,6 @@
 import { MetadataRoute } from "next"
 import prisma from "@/lib/prisma"
-
-const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.city-che.ck.ua"
+import { siteUrl } from "@/lib/site"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const categories = await prisma.category.findMany({

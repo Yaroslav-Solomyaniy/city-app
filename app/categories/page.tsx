@@ -3,6 +3,7 @@ import { Metadata } from "next"
 import { getCategories } from "@/actions/category/get-categories"
 import CategoriesClient from "@/app/categories/client-page"
 import { getResourcesCount } from "@/actions/resource/get-resources-count"
+import { ogImageUrl } from "@/lib/site"
 
 export const metadata: Metadata = {
   title: "Категорії послуг",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
     title: "Категорії послуг | СітіЧЕ",
     description: "Усі категорії міських послуг Черкас в одному місці.",
     url: "/categories",
-    images: [{ url: "https://www.city-che.ck.ua/opengraph-image", width: 1200, height: 630 }],
+    images: [{ url: ogImageUrl, width: 1200, height: 630 }],
   },
 }
 

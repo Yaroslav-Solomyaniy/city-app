@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { Metadata } from "next"
 import { getCategoryBySlug, getCategoryBySlugFull } from "@/actions/category/get-category-by-slug"
 import SubCategoryPageClient from "./client-page"
+import { ogImageUrl } from "@/lib/site"
 
 export async function generateMetadata({
   params,
@@ -21,7 +22,7 @@ export async function generateMetadata({
 
   const ogImage = category.photo
     ? { url: category.photo, width: 1200, height: 630, alt: category.title }
-    : { url: "https://www.city-che.ck.ua/opengraph-image", width: 1200, height: 630 }
+    : { url: ogImageUrl, width: 1200, height: 630 }
 
   return {
     title,

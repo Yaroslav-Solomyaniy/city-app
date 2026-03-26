@@ -26,7 +26,7 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
-const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.city-che.ck.ua"
+import { siteUrl } from "@/lib/site"
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
