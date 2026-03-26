@@ -26,7 +26,7 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
-const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://city-che.ck.ua"
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.city-che.ck.ua"
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -36,10 +36,14 @@ export const metadata: Metadata = {
   },
   description: "Офіційний вебпортал Черкаської міської громади. Знайдіть усі міські послуги, ресурси та онлайн-можливості Черкас в одному місці.",
   keywords: ["Черкаси", "міські послуги", "онлайн-сервіси", "Черкаська громада", "електронні послуги", "СітіЧЕ"],
+  alternates: {
+    canonical: siteUrl,
+  },
   openGraph: {
     type: "website",
     locale: "uk_UA",
     siteName: "СітіЧЕ",
+    url: siteUrl,
   },
   twitter: {
     card: "summary_large_image",
