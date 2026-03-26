@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     title: "Категорії послуг | СітіЧЕ",
     description: "Усі категорії міських послуг Черкас в одному місці.",
     url: "/categories",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+    images: [{ url: "https://www.city-che.ck.ua/opengraph-image", width: 1200, height: 630 }],
   },
 }
 

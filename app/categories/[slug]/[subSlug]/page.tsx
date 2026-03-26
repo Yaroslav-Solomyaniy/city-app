@@ -26,7 +26,7 @@ export async function generateMetadata({
       title: `${title} | СітіЧЕ`,
       description,
       url: `/categories/${slug}/${subSlug}`,
-      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+      images: [{ url: "https://www.city-che.ck.ua/opengraph-image", width: 1200, height: 630 }],
     },
   }
 }
