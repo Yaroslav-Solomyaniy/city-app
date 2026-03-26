@@ -26,6 +26,7 @@ export async function generateMetadata({
       title: `${title} | СітіЧЕ`,
       description,
       url: `/categories/${slug}/${subSlug}`,
+      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     },
   }
 }

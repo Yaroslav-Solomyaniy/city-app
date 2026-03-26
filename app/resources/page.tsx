@@ -12,6 +12,7 @@ export const metadata: Metadata = {
     title: "Перелік ресурсів | СітіЧЕ",
     description: "Повний перелік онлайн-ресурсів Черкаської громади.",
     url: "/resources",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
   },
 }
 
