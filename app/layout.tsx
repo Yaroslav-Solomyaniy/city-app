@@ -40,7 +40,6 @@ export const metadata: Metadata = {
     type: "website",
     locale: "uk_UA",
     siteName: "СітіЧЕ",
-    images: [{ url: "/panorama.jpg", width: 1200, height: 630, alt: "СітіЧЕ — вебпортал Черкаської громади" }],
   },
   twitter: {
     card: "summary_large_image",

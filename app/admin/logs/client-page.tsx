@@ -200,7 +200,7 @@ export default function LogsClient({ logs, users, activeAction, activeUser }: Pr
   }
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-[1400px] space-y-6">
       {/* Summary badges — завжди від повного logs */}
       <div className="flex flex-wrap items-center gap-2">
         {(["create", "edit", "delete"] as const).map((a) => {

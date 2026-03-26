@@ -163,7 +163,7 @@ export default function FeedbackClient({ initialItems }: { initialItems: Feedbac
   }
 
   return (
-    <>
+    <div className="mx-auto max-w-[1400px] space-y-6">
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {(Object.entries(TYPE_META) as [FeedbackType, (typeof TYPE_META)[FeedbackType]][]).map(([type, meta]) => {
@@ -407,13 +407,17 @@ export default function FeedbackClient({ initialItems }: { initialItems: Feedbac
               )}
             </TableBody>
           </Table>
-          <Separator />
-          <div className="px-5 py-3">
-            <p className="text-[12px] text-muted-foreground">
-              Показано <span className="font-semibold text-foreground">{filtered.length}</span> з{" "}
-              <span className="font-semibold text-foreground">{items.length}</span> звернень
-            </p>
-          </div>
+          {filtered.length > 0 && (
+            <>
+              <Separator />
+              <div className="px-5 py-3">
+                <p className="text-[12px] text-muted-foreground">
+                  Показано <span className="font-semibold text-foreground">{filtered.length}</span> з{" "}
+                  <span className="font-semibold text-foreground">{items.length}</span> звернень
+                </p>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
 
@@ -450,7 +454,7 @@ export default function FeedbackClient({ initialItems }: { initialItems: Feedbac
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   )
 }
 

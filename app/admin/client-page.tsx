@@ -68,71 +68,54 @@ const LINKS = [
 
 export default function AdminDashboardClient({ categories, resources, admins, feedback }: Props) {
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="mx-auto max-w-[1400px] space-y-6">
 
-      {/* Top accent line */}
-      <div className="h-1 w-full bg-gradient-to-r from-indigo-500 via-violet-500 to-emerald-400" />
-
-      <div className="flex flex-1 flex-col items-center justify-center px-6 py-14 sm:px-10">
-        <div className="w-full max-w-6xl">
-
-          {/* Header */}
-          <div className="mb-12 flex flex-col items-start gap-5 rounded-2xl border border-slate-200 bg-white px-7 py-6 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="mb-1 text-xs font-semibold tracking-[0.18em] text-slate-400 uppercase">Адмін-панель</p>
-              <h1 className="text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">СітіЧЕ</h1>
-            </div>
-            <Image src="/Cherkasy_Color_Mini.png" width={200} height={64} alt="Черкаси" priority className="opacity-90" />
-          </div>
-
-          {/* Grid */}
-          <div className="grid grid-cols-1 gap-px bg-slate-200 overflow-hidden rounded-2xl border border-slate-200 shadow-sm sm:grid-cols-2 lg:grid-cols-3">
-            {LINKS.map((item) => {
-              const Icon = item.icon
-              return (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className="group relative flex flex-col gap-6 bg-white px-6 py-6 transition-colors duration-150 hover:bg-slate-50"
-                >
-                  {/* Corner blob */}
-                  <div
-                    className="pointer-events-none absolute top-0 right-0 h-20 w-20 rounded-bl-[4rem] rounded-tr-2xl opacity-[0.07]"
-                    style={{ background: item.accent }}
-                  />
-
-                  {/* Number tag */}
-                  <span className="text-[10px] font-bold tracking-widest text-slate-300">{item.tag}</span>
-
-                  {/* Icon */}
-                  <div
-                    className="flex h-12 w-12 items-center justify-center rounded-2xl transition-transform duration-200 group-hover:scale-110"
-                    style={{ background: `${item.accent}18` }}
-                  >
-                    <Icon size={22} strokeWidth={1.6} style={{ color: item.accent }} />
-                  </div>
-
-                  {/* Text */}
-                  <div>
-                    <p className="text-base font-bold text-slate-800 sm:text-[17px]">{item.label}</p>
-                    <p className="mt-0.5 text-[12.5px] text-slate-400">{item.description}</p>
-                  </div>
-
-                  {/* Bottom accent line on hover */}
-                  <div
-                    className="absolute bottom-0 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full"
-                    style={{ background: item.accent }}
-                  />
-                </Link>
-              )
-            })}
-          </div>
-
-          <p className="mt-8 text-center text-[11px] text-slate-300">
-            © {new Date().getFullYear()} КП «Інститут розвитку міста та цифрової трансформації» · СітіЧЕ
-          </p>
+      {/* Header */}
+      <div className="flex flex-col items-start gap-5 rounded-2xl border bg-card px-7 py-6 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="mb-1 text-xs font-semibold tracking-[0.18em] text-muted-foreground uppercase">Адмін-панель</p>
+          <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-5xl">СітіЧЕ</h1>
         </div>
+        <Image src="/1.png" width={200} height={64} alt="Черкаси" priority className="opacity-90" />
       </div>
+
+      {/* Grid */}
+      <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border bg-border shadow-sm sm:grid-cols-2 lg:grid-cols-3">
+        {LINKS.map((item) => {
+          const Icon = item.icon
+          return (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="group relative flex flex-col gap-6 bg-card px-6 py-6 transition-colors duration-150 hover:bg-muted/40"
+            >
+              <div
+                className="pointer-events-none absolute top-0 right-0 h-20 w-20 rounded-bl-[4rem] rounded-tr-2xl opacity-[0.07]"
+                style={{ background: item.accent }}
+              />
+              <span className="text-[10px] font-bold tracking-widest text-muted-foreground/40">{item.tag}</span>
+              <div
+                className="flex h-12 w-12 items-center justify-center rounded-2xl transition-transform duration-200 group-hover:scale-110"
+                style={{ background: `${item.accent}18` }}
+              >
+                <Icon size={22} strokeWidth={1.6} style={{ color: item.accent }} />
+              </div>
+              <div>
+                <p className="text-base font-bold text-foreground sm:text-[17px]">{item.label}</p>
+                <p className="mt-0.5 text-[12.5px] text-muted-foreground">{item.description}</p>
+              </div>
+              <div
+                className="absolute bottom-0 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full"
+                style={{ background: item.accent }}
+              />
+            </Link>
+          )
+        })}
+      </div>
+
+      <p className="text-center text-[11px] text-muted-foreground/40">
+        © {new Date().getFullYear()} КП «Інститут розвитку міста та цифрової трансформації» · СітіЧЕ
+      </p>
     </div>
   )
 }

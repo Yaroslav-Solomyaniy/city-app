@@ -2,34 +2,16 @@ export const dynamic = "force-dynamic"
 
 import React from "react"
 import { Metadata } from "next"
+import { AdminLayoutWrapper } from "@/components/admin-layout-wrapper"
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
-import {
-  SidebarProvider,
-  SidebarTrigger,
-  SidebarInset,
-} from "@/components/ui/sidebar"
-import { AdminSidebar } from "@/components/admin-sidebar"
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <SidebarProvider>
-      <AdminSidebar />
-      <SidebarInset>
-        <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-card/80 px-4 backdrop-blur-md">
-          <SidebarTrigger />
-          <span className="text-[13px] font-bold text-foreground">
-            Адмін-панель
-          </span>
-        </header>
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
-      </SidebarInset>
-    </SidebarProvider>
-  )
+  return <AdminLayoutWrapper>{children}</AdminLayoutWrapper>
 }

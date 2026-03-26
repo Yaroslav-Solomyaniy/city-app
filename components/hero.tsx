@@ -5,14 +5,9 @@ import Link from "next/link"
 import panorama from "@/public/new_pano.jpeg"
 import iphone from "@/public/iphone_final.png"
 import { Button } from "@/components/ui/button"
-import {  Clock, Code2, Database, LayoutGrid } from "lucide-react"
+import { Code2, Database, Info, LayoutGrid } from "lucide-react"
 import { TypingAnimation } from "@/components/ui/typing-animation"
 
-const STATS = [
-  { icon: LayoutGrid, value: "Усі послуги", label: "Адміністративні, соціальні та довідкові сервіси" },
-  { icon: Clock, value: "24 / 7", label: "Доступно у будь-який час" },
-  { icon: Database, value: "Актуально", label: "Оновлені ресурси та перевірені дані" },
-]
 
 export default function Hero() {
   return (
@@ -114,30 +109,18 @@ export default function Hero() {
               className="w-full rounded-full border-slate-300/70 bg-transparent px-6 text-[14px] text-slate-700 hover:bg-white/60 hover:text-slate-900 sm:w-auto"
             >
               <Link href="/about" className="flex items-center gap-2">
-                Розробники
-                <Code2 className="size-3.5" />
+                Про проєкт
+                <Info className="size-3.5" />
               </Link>
             </Button>
           </div>
 
-          {/*/!* stats *!/*/}
-          {/*<div className="grid grid-cols-3 gap-3 border-t border-slate-200/70 pt-4 sm:gap-6 sm:pt-6">*/}
-          {/*  {STATS.map(({ icon: Icon, value, label }) => (*/}
-          {/*    <div key={value} className="flex flex-col gap-1">*/}
-          {/*      <div className="flex items-center gap-1.5">*/}
-          {/*        <Icon className="size-3.5 shrink-0 text-sky-500" />*/}
-          {/*        <span className="text-[11px] font-bold text-slate-800 sm:text-[13px]">{value}</span>*/}
-          {/*      </div>*/}
-          {/*      <p className="text-[9px] leading-snug text-slate-500 sm:text-[11px]">{label}</p>*/}
-          {/*    </div>*/}
-          {/*  ))}*/}
-          {/*</div>*/}
         </div>
 
         {/* ── RIGHT: iPhone ── */}
         {/* hidden on mobile, visible tablet+ */}
-        <div className="hidden w-full items-center justify-center self-center md:flex">
-          <div className="relative w-[200px] drop-shadow-2xl lg:w-[280px] xl:w-[340px]">
+        <div className="hidden w-full items-center justify-center self-center lg:flex">
+          <div className="relative w-50 drop-shadow-2xl lg:w-70 xl:w-85">
             <Image src={iphone} alt="СітіЧЕ на iPhone" width={380} height={780} quality={100} sizes="(max-width: 1024px) 200px, (max-width: 1280px) 280px, 340px" className="w-full object-contain" priority />
           </div>
         </div>

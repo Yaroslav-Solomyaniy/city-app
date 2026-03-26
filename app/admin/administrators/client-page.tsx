@@ -23,7 +23,7 @@ export default function AdministratorsClient({ admins, invites, currentUserId }:
   const [deleteAdminId, setDeleteAdminId] = useState<string | null>(null)
 
   return (
-    <div className="mx-auto max-w-5xl space-y-10">
+    <div className="mx-auto max-w-[1400px] space-y-10">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
